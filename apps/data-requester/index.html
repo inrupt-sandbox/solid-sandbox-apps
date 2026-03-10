@@ -15,18 +15,22 @@
     <main>
       <div id="content" class="hidden">
         <nav class="tabs">
-          <button class="tab active" data-tab="grants-tab">My Granted Access</button>
+          <button class="tab active" data-tab="chat-tab">Chat</button>
+          <button class="tab" data-tab="grants-tab">Granted Access</button>
           <button class="tab" data-tab="request-tab">Request Access</button>
         </nav>
 
-        <div id="grants-tab" class="tab-content active">
-          <section id="grants-panel" class="hidden">
-            <div id="grants-list"></div>
-            <div id="resource-viewer" class="hidden"></div>
-          </section>
+        <div id="chat-tab" class="tab-content active">
           <section id="chat-panel" class="hidden">
             <h2>Chat</h2>
             <div id="chat-container"></div>
+          </section>
+        </div>
+
+        <div id="grants-tab" class="tab-content">
+          <section id="grants-panel" class="hidden">
+            <div id="grants-list"></div>
+            <div id="resource-viewer" class="hidden"></div>
           </section>
         </div>
 
