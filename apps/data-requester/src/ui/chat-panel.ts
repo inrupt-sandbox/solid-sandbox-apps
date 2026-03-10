@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import { escapeHtml } from "@solid-ecosystem/shared";
 import type { GrantInfo } from "../grant-viewer.js";
 
 marked.setOptions({ breaks: true });
@@ -148,12 +149,4 @@ function getShortWebId(webId: string): string {
   } catch {
     return webId;
   }
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

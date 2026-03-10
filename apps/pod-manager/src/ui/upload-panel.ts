@@ -1,4 +1,5 @@
 import { uploadFile } from "../uploader.js";
+import { escapeHtml } from "@solid-ecosystem/shared";
 
 let currentContainer: string | null = null;
 let panelEl: HTMLElement | null = null;
@@ -106,11 +107,4 @@ async function handleFiles(files: File[], progressArea: HTMLElement): Promise<vo
   }
 
   onCompleteRef?.();
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }

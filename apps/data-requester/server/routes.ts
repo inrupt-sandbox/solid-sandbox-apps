@@ -13,13 +13,11 @@ import {
   type CredentialResult,
 } from "@inrupt/solid-client-access-grants";
 import { getPodUrlAll, getSolidDataset } from "@inrupt/solid-client";
-import { parsePodIndexFromDataset, DiscoveryClient } from "@solid-ecosystem/shared";
+import { parsePodIndexFromDataset, DiscoveryClient, VC_QUERY_ENDPOINT, formatModes } from "@solid-ecosystem/shared";
 import type { DatasetWithId } from "@inrupt/solid-client-vc";
 import { getSessionForRequest } from "./auth.js";
 
 export const apiRouter = Router();
-
-const QUERY_ENDPOINT = new URL("https://vc.inrupt.com/query");
 const discovery = new DiscoveryClient();
 
 const TEXT_TYPES = ["text/", "application/json", "application/ld+json", "text/turtle"];
@@ -37,7 +35,7 @@ apiRouter.get("/grants", async (req, res) => {
   try {
     const result: CredentialResult = await query(
       { type: "SolidAccessGrant", status: "Active" },
-      { fetch: session.fetch, queryEndpoint: QUERY_ENDPOINT }
+      { fetch: session.fetch, queryEndpoint: VC_QUERY_ENDPOINT }
     );
 
     const grants = result.items.map((vc) => {
@@ -293,10 +291,3 @@ function looksLikeUrl(s: string): boolean {
   }
 }
 
-function formatModes(modes: { read?: boolean; write?: boolean; append?: boolean }): string[] {
-  const result: string[] = [];
-  if (modes.read) result.push("Read");
-  if (modes.write) result.push("Write");
-  if (modes.append) result.push("Append");
-  return result;
-}

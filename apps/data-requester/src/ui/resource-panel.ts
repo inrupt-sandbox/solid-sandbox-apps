@@ -1,3 +1,4 @@
+import { escapeHtml } from "@solid-ecosystem/shared";
 import type { PodIndex, PodResource } from "@solid-ecosystem/shared";
 
 export function renderResourceBrowser(
@@ -54,12 +55,4 @@ function getShortUrl(url: string, podUrl: string): string {
     return url.slice(podUrl.length) || "/";
   }
   return new URL(url).pathname;
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

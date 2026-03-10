@@ -1,4 +1,5 @@
 import type { GrantInfo, ResourceContent } from "../grant-viewer.js";
+import { escapeHtml } from "@solid-ecosystem/shared";
 
 export function renderGrantsPanel(
   container: HTMLElement,
@@ -87,12 +88,4 @@ export function renderResourceViewer(
     container.classList.add("hidden");
     container.innerHTML = "";
   });
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

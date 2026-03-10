@@ -16,16 +16,8 @@ export function setResourceContext(resources: ResourceContext[]): void {
   resourceContext = resources;
 }
 
-export function getResourceContext(): ResourceContext[] {
-  return [...resourceContext];
-}
-
 export function clearConversation(): void {
   messages = [];
-}
-
-export function getMessages(): ChatMessage[] {
-  return [...messages];
 }
 
 export async function sendMessage(userText: string): Promise<string> {

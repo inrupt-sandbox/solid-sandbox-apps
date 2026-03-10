@@ -1,5 +1,5 @@
+import { DiscoveryClient, escapeHtml } from "@solid-ecosystem/shared";
 import type { DirectoryEntry } from "@solid-ecosystem/shared";
-import { DiscoveryClient } from "@solid-ecosystem/shared";
 
 const discovery = new DiscoveryClient();
 
@@ -81,11 +81,4 @@ function renderResults(
     card.addEventListener("click", () => onSelect(entry));
     container.appendChild(card);
   }
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }

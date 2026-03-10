@@ -34,3 +34,6 @@ export const POD_INDEX = {
   contentType: "http://example.org/pod-index#contentType",
   updatedAt: "http://example.org/pod-index#updatedAt",
 } as const;
+
+/** Inrupt VC query endpoint for access grants. */
+export const VC_QUERY_ENDPOINT = new URL("https://vc.inrupt.com/query");

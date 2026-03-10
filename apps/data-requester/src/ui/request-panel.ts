@@ -1,3 +1,5 @@
+import { escapeHtml } from "@solid-ecosystem/shared";
+
 export function renderRequestForm(
   container: HTMLElement,
   resourceUrls: string[],
@@ -47,11 +49,4 @@ export function renderRequestForm(
 
       onSubmit(modes, purpose);
     });
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }

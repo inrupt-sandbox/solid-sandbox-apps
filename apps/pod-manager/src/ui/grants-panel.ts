@@ -1,4 +1,5 @@
 import type { ActiveGrantInfo } from "../access-grants.js";
+import { escapeHtml } from "@solid-ecosystem/shared";
 
 export function renderGrantsPanel(
   container: HTMLElement,
@@ -58,11 +59,4 @@ function shortenUrl(url: string): string {
   } catch {
     return url;
   }
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }

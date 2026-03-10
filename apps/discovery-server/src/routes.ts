@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { Store } from "./store.js";
 import { fetchPublicIndex } from "./index-fetcher.js";
+import { escapeHtml } from "@solid-ecosystem/shared";
 
 const store = new Store();
 const router = Router();
@@ -190,13 +191,5 @@ router.get("/", (_req: Request, res: Response) => {
 </div>
 </body></html>`);
 });
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 export { router };

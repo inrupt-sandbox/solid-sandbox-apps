@@ -1,4 +1,5 @@
 import { getFile } from "@inrupt/solid-client";
+import { escapeHtml } from "@solid-ecosystem/shared";
 import { moveResource } from "../uploader.js";
 
 const TEXT_TYPES = [
@@ -198,12 +199,4 @@ function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

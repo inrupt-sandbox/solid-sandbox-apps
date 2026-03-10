@@ -16,8 +16,7 @@ import {
   type CredentialResult,
 } from "@inrupt/solid-client-access-grants";
 import type { DatasetWithId } from "@inrupt/solid-client-vc";
-
-const QUERY_ENDPOINT = new URL("https://vc.inrupt.com/query");
+import { VC_QUERY_ENDPOINT, formatModes } from "@solid-ecosystem/shared";
 
 export interface AccessRequestInfo {
   id: string;
@@ -39,7 +38,7 @@ export async function fetchAccessRequests(
   try {
     const result: CredentialResult = await query(
       { type: "SolidAccessRequest", status: "Pending" },
-      { fetch: authFetch, queryEndpoint: QUERY_ENDPOINT }
+      { fetch: authFetch, queryEndpoint: VC_QUERY_ENDPOINT }
     );
 
     return result.items.map((vc) => {
@@ -100,7 +99,7 @@ export async function fetchActiveGrants(
   try {
     const result: CredentialResult = await query(
       { type: "SolidAccessGrant", status: "Active" },
-      { fetch: authFetch, queryEndpoint: QUERY_ENDPOINT }
+      { fetch: authFetch, queryEndpoint: VC_QUERY_ENDPOINT }
     );
 
     return result.items.map((vc) => {
@@ -127,12 +126,4 @@ export async function revokeGrant(
   authFetch: typeof fetch
 ): Promise<void> {
   await revokeAccessGrant(grantVc, { fetch: authFetch });
-}
-
-function formatModes(modes: { read?: boolean; write?: boolean; append?: boolean }): string[] {
-  const result: string[] = [];
-  if (modes.read) result.push("Read");
-  if (modes.write) result.push("Write");
-  if (modes.append) result.push("Append");
-  return result;
 }

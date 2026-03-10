@@ -1,4 +1,5 @@
 import { login, logout, isLoggedIn, getWebId } from "../auth.js";
+import { escapeHtml } from "@solid-ecosystem/shared";
 
 export function renderAuthPanel(container: HTMLElement): void {
   container.innerHTML = "";
@@ -6,7 +7,7 @@ export function renderAuthPanel(container: HTMLElement): void {
   if (isLoggedIn()) {
     const webId = getWebId();
     container.innerHTML = `
-      <span class="user-info">Logged in as <strong>${webId}</strong></span>
+      <span class="user-info">Logged in as <strong>${escapeHtml(webId ?? "")}</strong></span>
       <button id="logout-btn" class="btn btn-secondary">Logout</button>
     `;
     container.querySelector("#logout-btn")!.addEventListener("click", logout);

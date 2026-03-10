@@ -1,4 +1,5 @@
 import type { AccessRequestInfo } from "../access-grants.js";
+import { escapeHtml } from "@solid-ecosystem/shared";
 
 export function renderAccessPanel(
   container: HTMLElement,
@@ -115,11 +116,4 @@ function shortenWebId(webId: string): string {
   } catch {
     return webId;
   }
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }
