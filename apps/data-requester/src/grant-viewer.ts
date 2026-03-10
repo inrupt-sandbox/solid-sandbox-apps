@@ -30,6 +30,24 @@ export async function fetchReceivedGrants(): Promise<GrantInfo[]> {
   }
 }
 
+export async function listContainerContents(
+  containerUrl: string,
+  grantId: string
+): Promise<string[]> {
+  const res = await fetch("/api/list-container", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ containerUrl, grantId }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error || "Failed to list container");
+  }
+
+  return res.json();
+}
+
 export async function fetchGrantedResource(
   resourceUrl: string,
   grantId: string

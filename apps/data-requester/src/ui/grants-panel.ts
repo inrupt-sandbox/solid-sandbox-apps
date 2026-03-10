@@ -1,4 +1,5 @@
 import type { GrantInfo, ResourceContent } from "../grant-viewer.js";
+import { listContainerContents } from "../grant-viewer.js";
 import { escapeHtml } from "@solid-ecosystem/shared";
 
 export function renderGrantsPanel(
@@ -21,19 +22,6 @@ export function renderGrantsPanel(
       ? new Date(grant.expiresAt).toLocaleDateString()
       : "No expiration";
 
-    const resourceList = grant.resourceUrls
-      .map((u) => {
-        const isContainer = u.endsWith("/");
-        const viewBtn = isContainer
-          ? `<span class="muted">(container)</span>`
-          : `<button class="btn btn-small view-btn" data-url="${escapeHtml(u)}">View</button>`;
-        return `<li>
-            <span class="resource-url">${escapeHtml(u)}</span>
-            ${viewBtn}
-          </li>`;
-      })
-      .join("");
-
     card.innerHTML = `
       <div class="grant-info">
         <strong>From: ${escapeHtml(grant.ownerWebId)}</strong>
@@ -41,18 +29,79 @@ export function renderGrantsPanel(
           <span class="mode-badges">${grant.modes.map((m) => `<span class="mode-badge">${m}</span>`).join(" ")}</span>
           <span class="grant-expiry">Expires: ${expiry}</span>
         </p>
-        <ul class="grant-resources">${resourceList}</ul>
+        <ul class="grant-resources"></ul>
       </div>
     `;
 
-    card.querySelectorAll(".view-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const url = (btn as HTMLElement).dataset.url!;
-        onViewResource(url, grant);
-      });
-    });
+    const listEl = card.querySelector(".grant-resources")!;
+    renderResourceList(listEl, grant.resourceUrls, grant, onViewResource);
 
     container.appendChild(card);
+  }
+}
+
+function renderResourceList(
+  listEl: Element,
+  urls: string[],
+  grant: GrantInfo,
+  onViewResource: (resourceUrl: string, grant: GrantInfo) => void
+): void {
+  for (const u of urls) {
+    const li = document.createElement("li");
+    const isContainer = u.endsWith("/");
+
+    if (isContainer) {
+      li.innerHTML = `
+        <span class="resource-url">${escapeHtml(u)}</span>
+        <button class="btn btn-small browse-btn">Browse</button>
+        <ul class="container-contents hidden"></ul>
+      `;
+
+      const browseBtn = li.querySelector(".browse-btn")!;
+      const contentsEl = li.querySelector(".container-contents")!;
+      let loaded = false;
+
+      browseBtn.addEventListener("click", async () => {
+        if (loaded) {
+          contentsEl.classList.toggle("hidden");
+          browseBtn.textContent = contentsEl.classList.contains("hidden") ? "Browse" : "Collapse";
+          return;
+        }
+
+        browseBtn.textContent = "Loading...";
+        (browseBtn as HTMLButtonElement).disabled = true;
+
+        try {
+          const contents = await listContainerContents(u, grant.id);
+          loaded = true;
+          contentsEl.classList.remove("hidden");
+          browseBtn.textContent = "Collapse";
+          (browseBtn as HTMLButtonElement).disabled = false;
+
+          if (contents.length === 0) {
+            contentsEl.innerHTML = `<li class="muted">Empty container</li>`;
+          } else {
+            renderResourceList(contentsEl, contents, grant, onViewResource);
+          }
+        } catch (err: any) {
+          browseBtn.textContent = "Browse";
+          (browseBtn as HTMLButtonElement).disabled = false;
+          contentsEl.innerHTML = `<li class="error">Failed: ${err.message}</li>`;
+          contentsEl.classList.remove("hidden");
+        }
+      });
+    } else {
+      li.innerHTML = `
+        <span class="resource-url">${escapeHtml(u)}</span>
+        <button class="btn btn-small view-btn">View</button>
+      `;
+
+      li.querySelector(".view-btn")!.addEventListener("click", () => {
+        onViewResource(u, grant);
+      });
+    }
+
+    listEl.appendChild(li);
   }
 }
 

@@ -2,5 +2,497 @@
   {
     "webId": "https://id.inrupt.com/maxleonarddev5",
     "registeredAt": "2026-03-10T16:33:01.369Z"
+  },
+  {
+    "webId": "https://id.inrupt.com/maxleonarddev4",
+    "podUrl": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/",
+    "registeredAt": "2026-03-10T20:07:49.456Z",
+    "index": {
+      "webId": "https://id.inrupt.com/maxleonarddev4",
+      "podUrl": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/",
+      "resources": [
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-52ebc17a-cad3-452c-bd39-9736f6f758b7/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-52ebc17a-cad3-452c-bd39-9736f6f758b7/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-52ebc17a-cad3-452c-bd39-9736f6f758b7/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a6af0b4c-0deb-459e-bed7-6a484db658b2/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a6af0b4c-0deb-459e-bed7-6a484db658b2/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a6af0b4c-0deb-459e-bed7-6a484db658b2/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-7ddd1334-e95d-4d7b-bd07-874d333422a2/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-7ddd1334-e95d-4d7b-bd07-874d333422a2/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-7ddd1334-e95d-4d7b-bd07-874d333422a2/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-d6db448e-3692-442c-a8ec-2533aae5088a/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-d6db448e-3692-442c-a8ec-2533aae5088a/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-d6db448e-3692-442c-a8ec-2533aae5088a/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-2932d326-8499-44b8-8fe1-f27f33acc79a/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-2932d326-8499-44b8-8fe1-f27f33acc79a/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-2932d326-8499-44b8-8fe1-f27f33acc79a/body.html",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-2932d326-8499-44b8-8fe1-f27f33acc79a/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-0dbf1945-a8cc-4c7e-a28d-2227f00a0d97/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-0dbf1945-a8cc-4c7e-a28d-2227f00a0d97/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-0dbf1945-a8cc-4c7e-a28d-2227f00a0d97/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-015ba3a4-01e9-4bf7-8e7a-52601201cb27/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-015ba3a4-01e9-4bf7-8e7a-52601201cb27/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-015ba3a4-01e9-4bf7-8e7a-52601201cb27/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-b60ee1e7-b7e7-4b2c-8e4d-fe02422e2db0/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-b60ee1e7-b7e7-4b2c-8e4d-fe02422e2db0/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-b60ee1e7-b7e7-4b2c-8e4d-fe02422e2db0/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-c644c977-0839-4fb6-9770-ec1e3d4fa9a0/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-c644c977-0839-4fb6-9770-ec1e3d4fa9a0/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-c644c977-0839-4fb6-9770-ec1e3d4fa9a0/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-5fdfd3aa-b402-4d9a-8f1f-e98cfbda3493/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-5fdfd3aa-b402-4d9a-8f1f-e98cfbda3493/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-5fdfd3aa-b402-4d9a-8f1f-e98cfbda3493/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-4c8a35c2-f34b-4903-9022-3ae489cf0cbb/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-4c8a35c2-f34b-4903-9022-3ae489cf0cbb/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-4c8a35c2-f34b-4903-9022-3ae489cf0cbb/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-3b80ba48-7e7e-45cf-8958-63f10905197a/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-3b80ba48-7e7e-45cf-8958-63f10905197a/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-3b80ba48-7e7e-45cf-8958-63f10905197a/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-ffb43c38-353a-4861-8d57-ac49b368b462/body.html",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-ffb43c38-353a-4861-8d57-ac49b368b462/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-ffb43c38-353a-4861-8d57-ac49b368b462/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-ffb43c38-353a-4861-8d57-ac49b368b462/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-431cf257-74a3-4a64-b81c-e328f56d156a/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-431cf257-74a3-4a64-b81c-e328f56d156a/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-431cf257-74a3-4a64-b81c-e328f56d156a/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-87f6e350-0976-4f50-add7-1aea6ea11d0f/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-87f6e350-0976-4f50-add7-1aea6ea11d0f/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-87f6e350-0976-4f50-add7-1aea6ea11d0f/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-58726bf9-6cde-43fa-bb80-2ee3c3e239d2/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-58726bf9-6cde-43fa-bb80-2ee3c3e239d2/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-58726bf9-6cde-43fa-bb80-2ee3c3e239d2/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a2c13744-2b26-4f60-b6e9-b7ffeeba6e5b/body.html",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a2c13744-2b26-4f60-b6e9-b7ffeeba6e5b/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a2c13744-2b26-4f60-b6e9-b7ffeeba6e5b/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-a2c13744-2b26-4f60-b6e9-b7ffeeba6e5b/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-e81b5565-aeff-4d0d-b524-347f7e9c964d/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-e81b5565-aeff-4d0d-b524-347f7e9c964d/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-e81b5565-aeff-4d0d-b524-347f7e9c964d/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-89e457e2-024b-413e-9e64-eba4c018ab16/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-89e457e2-024b-413e-9e64-eba4c018ab16/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-89e457e2-024b-413e-9e64-eba4c018ab16/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-58937858-79d2-42b9-a656-fbd953bf95b6/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-58937858-79d2-42b9-a656-fbd953bf95b6/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-58937858-79d2-42b9-a656-fbd953bf95b6/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-dc7e1fef-a035-4194-96a3-8bd1b66c5c78/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-dc7e1fef-a035-4194-96a3-8bd1b66c5c78/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-dc7e1fef-a035-4194-96a3-8bd1b66c5c78/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-1b2a236b-c0ef-48c6-b829-bd516f0dd08d/body.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-1b2a236b-c0ef-48c6-b829-bd516f0dd08d/email.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/email-1b2a236b-c0ef-48c6-b829-bd516f0dd08d/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/aisha-johnson/profile.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/aisha-johnson/teacher-notes.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/aisha-johnson/learning-plan.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/aisha-johnson/test-scores.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/aisha-johnson/attendance.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/aisha-johnson/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/emails/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/emma-chen/profile.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/emma-chen/learning-plan.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/emma-chen/attendance.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/emma-chen/teacher-notes.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/emma-chen/test-scores.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/emma-chen/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/marcus-williams/test-scores.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/marcus-williams/teacher-notes.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/marcus-williams/learning-plan.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/marcus-williams/profile.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/marcus-williams/attendance.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/marcus-williams/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/chat-c68a863a-3993-4155-a7ec-4c2fcd21341b/msg-2ea01fda-bd79-4887-9ddb-de56e2bc501a.jsonld",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/chat-c68a863a-3993-4155-a7ec-4c2fcd21341b/msg-3ab60bf1-246b-4c96-9485-caad9e9e9394.jsonld",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/chat-c68a863a-3993-4155-a7ec-4c2fcd21341b/msg-3e32d4be-5c96-45a8-bbfb-0e7675cf81a6.jsonld",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/chat-c68a863a-3993-4155-a7ec-4c2fcd21341b/msg-364fe959-686e-484a-b244-066cace7a9b9.jsonld",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/chat-c68a863a-3993-4155-a7ec-4c2fcd21341b/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/keys/private-key.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/keys/public-key.pgp",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/keys/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/uploads/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/test/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/index.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/disciplinary.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/test-scores.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/learning-plan.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/extracurriculars.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/schedule.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/attendance.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/health-wellness.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/profile.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/teacher-notes.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/report-cards.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/education/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/chat-c68a863a-3993-4155-a7ec-4c2fcd21341b.jsonld",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/chats/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/clientid/e3c815c1-62a9-4c3e-9182-1dd18a48a0be",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/clientid/",
+          "type": "container"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/profile",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/public-index.ttl",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/solid-dev-client-id.jsonld",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/test.txt",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/notifications.json",
+          "type": "resource"
+        },
+        {
+          "url": "https://storage.inrupt.com/7ed75871-a361-4bf3-84a4-83841ff220e7/",
+          "type": "container"
+        }
+      ],
+      "updatedAt": "2026-03-10T20:07:44.083Z"
+    }
   }
 ]

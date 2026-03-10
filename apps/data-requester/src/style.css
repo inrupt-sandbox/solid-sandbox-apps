@@ -180,6 +180,39 @@ section h2 {
   background: #f7fafc;
 }
 
+.resource-tree {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.resource-tree-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.resource-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 3px 6px;
+  font-size: 0.85rem;
+  font-family: monospace;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.resource-tree-row:hover {
+  background: #f7fafc;
+}
+
+.resource-tree-row input:disabled + span {
+  opacity: 0.5;
+}
+
 .resource-actions {
   margin-top: 1rem;
 }
@@ -255,12 +288,25 @@ section h2 {
 
 .grant-resources li {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding: 4px 0;
   font-size: 0.85rem;
   font-family: monospace;
   border-bottom: 1px solid #f7fafc;
+}
+
+.container-contents {
+  list-style: none;
+  padding-left: 1.5rem;
+  width: 100%;
+  border-left: 2px solid #e2e8f0;
+  margin: 4px 0;
+}
+
+.container-contents li {
+  border-bottom: 1px solid #f0f4f8;
 }
 
 .btn-small {

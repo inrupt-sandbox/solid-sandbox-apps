@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import {
   query,
   getFile,
+  getSolidDataset as getSolidDatasetWithGrant,
   getId,
   getResourceOwner,
   getResources,
@@ -12,7 +13,7 @@ import {
   issueAccessRequest,
   type CredentialResult,
 } from "@inrupt/solid-client-access-grants";
-import { getPodUrlAll, getSolidDataset } from "@inrupt/solid-client";
+import { getPodUrlAll, getSolidDataset, getContainedResourceUrlAll } from "@inrupt/solid-client";
 import { parsePodIndexFromDataset, DiscoveryClient, VC_QUERY_ENDPOINT, formatModes } from "@solid-ecosystem/shared";
 import type { DatasetWithId } from "@inrupt/solid-client-vc";
 import { getSessionForRequest } from "./auth.js";
@@ -97,6 +98,34 @@ apiRouter.post("/fetch-resource", async (req, res) => {
     }
   } catch (err: any) {
     console.error("Failed to fetch resource:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------- List Container ----------
+
+apiRouter.post("/list-container", async (req, res) => {
+  const session = await getSessionForRequest(req);
+  if (!session) return res.status(401).json({ error: "Not authenticated" });
+
+  const { containerUrl, grantId } = req.body;
+  if (!containerUrl || !grantId) {
+    return res.status(400).json({ error: "containerUrl and grantId required" });
+  }
+
+  const grantVc = grantVcCache.get(grantId);
+  if (!grantVc) {
+    return res.status(404).json({ error: "Grant not found. Please refresh grants." });
+  }
+
+  try {
+    const dataset = await getSolidDatasetWithGrant(containerUrl, grantVc, {
+      fetch: session.fetch,
+    });
+    const contained = getContainedResourceUrlAll(dataset);
+    res.json(contained);
+  } catch (err: any) {
+    console.error("Failed to list container:", err);
     res.status(500).json({ error: err.message });
   }
 });

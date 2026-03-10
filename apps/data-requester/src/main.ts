@@ -5,7 +5,7 @@ import { renderAuthPanel } from "./ui/auth-panel.js";
 import { renderSearchForm } from "./ui/search-panel.js";
 import { renderResourceBrowser } from "./ui/resource-panel.js";
 import { renderRequestForm } from "./ui/request-panel.js";
-import { fetchReceivedGrants, fetchGrantedResource } from "./grant-viewer.js";
+import { fetchReceivedGrants, fetchGrantedResource, listContainerContents } from "./grant-viewer.js";
 import { renderGrantsPanel, renderResourceViewer } from "./ui/grants-panel.js";
 import { renderChatPanel, appendMessage, setLoading } from "./ui/chat-panel.js";
 import { setResourceContext, clearConversation, sendMessage } from "./chatbot.js";
@@ -54,11 +54,22 @@ async function main(): Promise<void> {
         }
       });
 
-      // Build list of all non-container resources across all grants
+      // Build list of all resources across all grants, expanding containers
       const availableResources: Array<{ url: string; grant: GrantInfo }> = [];
       for (const grant of grants) {
         for (const url of grant.resourceUrls) {
-          if (!url.endsWith("/")) {
+          if (url.endsWith("/")) {
+            try {
+              const contents = await listContainerContents(url, grant.id);
+              for (const childUrl of contents) {
+                if (!childUrl.endsWith("/")) {
+                  availableResources.push({ url: childUrl, grant });
+                }
+              }
+            } catch (err) {
+              console.error(`Failed to list container ${url}:`, err);
+            }
+          } else {
             availableResources.push({ url, grant });
           }
         }
