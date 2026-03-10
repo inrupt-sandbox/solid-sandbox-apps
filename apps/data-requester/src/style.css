@@ -31,6 +31,43 @@ header h1 {
   color: #2d3748;
 }
 
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #718096;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tab:hover {
+  color: #2d3748;
+}
+
+.tab.active {
+  color: #4299e1;
+  border-bottom-color: #4299e1;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
 .user-info {
   margin-right: 1rem;
   font-size: 0.85rem;

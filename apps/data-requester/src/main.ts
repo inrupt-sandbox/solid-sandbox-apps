@@ -32,6 +32,16 @@ async function main(): Promise<void> {
 
   content.classList.remove("hidden");
 
+  // Wire up tabs
+  document.querySelectorAll<HTMLButtonElement>(".tabs .tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.tab!)!.classList.add("active");
+    });
+  });
+
   // Load granted access
   const grantsPanel = document.getElementById("grants-panel")!;
   const grantsList = document.getElementById("grants-list")!;

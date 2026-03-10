@@ -130,25 +130,23 @@ export function renderResourceBrowser(
         renderNodes(li, node.children, depth + 1);
       }
 
-      // When a container is checked, select just the container (inherit will cascade)
-      // and uncheck/disable children. When unchecked, re-enable children.
       cb.addEventListener("change", () => {
         if (cb.checked) {
           selected.add(node.url);
           if (isContainer) {
-            // Uncheck and disable child checkboxes — the container grant covers them
+            // Check all children too — they remain interactive
             li.querySelectorAll<HTMLInputElement>("ul input[type=checkbox]").forEach((child) => {
-              selected.delete(child.value);
-              child.checked = false;
-              child.disabled = true;
+              child.checked = true;
+              selected.add(child.value);
             });
           }
         } else {
           selected.delete(node.url);
           if (isContainer) {
-            // Re-enable child checkboxes
+            // Uncheck all children
             li.querySelectorAll<HTMLInputElement>("ul input[type=checkbox]").forEach((child) => {
-              child.disabled = false;
+              child.checked = false;
+              selected.delete(child.value);
             });
           }
         }

@@ -180,6 +180,39 @@ async function main(): Promise<void> {
     }
   }
 
+  // Poll access requests every 3 seconds to keep them fresh
+  let accessPollTimer: ReturnType<typeof setInterval> | null = null;
+
+  function startAccessPolling() {
+    stopAccessPolling();
+    accessPollTimer = setInterval(() => loadAccessRequests(), 3000);
+  }
+
+  function stopAccessPolling() {
+    if (accessPollTimer) {
+      clearInterval(accessPollTimer);
+      accessPollTimer = null;
+    }
+  }
+
+  // Start polling when the access tab is visible
+  document.querySelectorAll<HTMLButtonElement>(".tabs .tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      if (tab.dataset.tab === "access") {
+        loadAccessRequests();
+        startAccessPolling();
+      } else {
+        stopAccessPolling();
+      }
+    });
+  });
+
+  // If access tab is the default active tab, start polling immediately
+  const activeTab = document.querySelector<HTMLButtonElement>(".tabs .tab.active");
+  if (activeTab?.dataset.tab === "access") {
+    startAccessPolling();
+  }
+
   // Start grants/requests, registry check, and spider all in parallel
   const grantsPromise = Promise.all([loadAccessRequests(), loadActiveGrants()]);
   const registryCheck: Promise<DirectoryEntry | null> = discovery.lookup(webId).catch(() => null);
