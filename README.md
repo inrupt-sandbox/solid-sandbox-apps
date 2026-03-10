@@ -27,11 +27,11 @@ Built as a **reference implementation** demonstrating authentication, pod traver
                         │  │ • Grants     │                         │
                         │  │ • Requests   │                         │
                         │  └──────────────┘                         │
-                        └──────────┬────────────────────────────────┘
+                        └──────────▲────────────────────────────────┘
                                    │  OIDC + Solid Protocol
                      ┌─────────────┴──────────────┐
                      │                             │
-                     ▼                             ▼
+                     │                             │
 ┌─────────────────────────┐    ┌─────────────────────────────────────────┐
 │   Pod Manager           │    │   Data Requester                        │
 │   (Vite :5173)          │    │   Express :5174 → Vite :5175            │
