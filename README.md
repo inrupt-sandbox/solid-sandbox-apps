@@ -38,6 +38,12 @@ Built as a **reference implementation** demonstrating authentication, pod traver
 | `apps/data-requester` | Express server + Vite frontend. Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching with grant VCs, and Claude AI chat. Frontend is a thin API client. |
 | `apps/discovery-server` | Express REST API for WebID registration and search. Fetches and caches public indices. |
 
+## Prerequisites
+
+You need a Solid Pod on Inrupt Pod Spaces. Go to [start.inrupt.com](https://start.inrupt.com/), sign up, and create a pod. This gives you a WebID (e.g. `https://id.inrupt.com/yourname`) and a pod URL (e.g. `https://storage.inrupt.com/{uuid}/`).
+
+You'll log in with these credentials when using the Pod Manager and Data Requester apps.
+
 ## Getting Started
 
 ```bash
