@@ -8,15 +8,8 @@ Built as a **reference implementation** demonstrating authentication, pod traver
 
 ```mermaid
 graph TB
-    subgraph ESS["Inrupt Pod Spaces (ESS)"]
-        WebID["WebID Profile<br/><i>id.inrupt.com</i>"]
-        Pod["Solid Pod<br/><i>storage.inrupt.com</i><br/>Resources · Containers<br/>public-index.ttl · Access rules"]
-        VC["VC Service<br/><i>vc.inrupt.com</i><br/>Access Grants · Requests"]
-    end
-
-    subgraph Claude["Claude API"]
-        AI["Anthropic Messages API<br/><i>claude-haiku-4-5</i>"]
-    end
+    ESS["<b>Inrupt Pod Spaces (ESS)</b><br/>login.inrupt.com · id.inrupt.com · storage.inrupt.com · vc.inrupt.com<br/><br/>WebID Profiles · Solid Pods · Access Grants &amp; Requests"]
+    AI["<b>Claude API</b><br/>Chat completions via claude-haiku-4-5"]
 
     subgraph PM["Pod Manager · :5173"]
         PM_desc["Browser-only SPA<br/>OIDC login · Spider pod contents<br/>Publish public index · Approve/deny grants"]
@@ -30,15 +23,11 @@ graph TB
         DS_desc["WebID registration · Public index caching<br/>Search across users & resources<br/>In-memory store + JSON persistence"]
     end
 
-    PM_desc -- "OIDC + Solid Protocol" --> WebID
-    PM_desc -- "Read/write resources" --> Pod
-    PM_desc -- "Manage grants" --> VC
-    PM_desc -- "POST /register<br/>POST /refresh-index" --> DS_desc
+    PM_desc -- "OIDC · Read/write pod · Manage grants" --> ESS
+    PM_desc -- "POST /register, /refresh-index" --> DS_desc
 
-    DR_desc -- "OIDC + Solid Protocol" --> WebID
-    DR_desc -- "Fetch via grant VCs" --> Pod
-    DR_desc -- "Query grants/requests" --> VC
-    DR_desc -- "GET /search, /directory<br/>GET /lookup" --> DS_desc
+    DR_desc -- "OIDC · Fetch via grant VCs · Query grants" --> ESS
+    DR_desc -- "GET /search, /directory, /lookup" --> DS_desc
     DR_desc -- "Chat completions" --> AI
 ```
 
