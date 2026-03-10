@@ -110,7 +110,7 @@ router.get("/", (_req: Request, res: Response) => {
       <div class="card">
         <div class="card-header">
           <div>
-            <h3>${escapeHtml(e.name ?? "Unnamed User")}</h3>
+            <h3>${escapeHtml(e.name ?? e.webId)}</h3>
             <p class="mono muted">${escapeHtml(e.webId)}</p>
           </div>
           <div class="card-meta">
