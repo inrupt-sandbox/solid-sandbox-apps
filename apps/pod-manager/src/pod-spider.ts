@@ -15,7 +15,7 @@ type ProgressCallback = (progress: SpiderProgress) => void;
 type ResourcesCallback = (resources: PodResource[]) => void;
 
 /** Parse ldp:contains URLs out of a Turtle container response. */
-function parseContainedUrls(turtle: string, containerUrl: string): string[] {
+export function parseContainedUrls(turtle: string, containerUrl: string): string[] {
   const urls: string[] = [];
 
   // Match <url> in ldp:contains block (handles multi-object comma lists)

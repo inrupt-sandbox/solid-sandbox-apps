@@ -1,6 +1,7 @@
 import { getFile, deleteFile } from "@inrupt/solid-client";
 import { escapeHtml } from "@solid-ecosystem/shared";
 import { moveResource } from "../uploader.js";
+import { parseContainedUrls } from "../pod-spider.js";
 
 const TEXT_TYPES = [
   "text/",
@@ -175,22 +176,6 @@ function buildToolbar(
   deleteBtn.textContent = "Delete";
   actions.appendChild(deleteBtn);
 
-  const deleteConfirmPanel = document.createElement("div");
-  deleteConfirmPanel.className = "delete-confirm-panel hidden";
-  deleteConfirmPanel.innerHTML = `<span>Are you sure?</span>`;
-
-  const deleteYes = document.createElement("button");
-  deleteYes.className = "btn btn-danger btn-sm";
-  deleteYes.textContent = "Yes, delete";
-  deleteConfirmPanel.appendChild(deleteYes);
-
-  const deleteNo = document.createElement("button");
-  deleteNo.className = "btn btn-secondary btn-sm";
-  deleteNo.textContent = "Cancel";
-  deleteConfirmPanel.appendChild(deleteNo);
-
-  actions.appendChild(deleteConfirmPanel);
-
   toolbar.appendChild(actions);
 
   moveBtn.addEventListener("click", () => {
@@ -218,25 +203,43 @@ function buildToolbar(
   });
 
   deleteBtn.addEventListener("click", () => {
-    deleteConfirmPanel.classList.toggle("hidden");
-  });
+    deleteBtn.classList.add("hidden");
 
-  deleteNo.addEventListener("click", () => {
-    deleteConfirmPanel.classList.add("hidden");
-  });
+    const confirmPanel = document.createElement("div");
+    confirmPanel.className = "delete-confirm-panel";
+    confirmPanel.innerHTML = `<span>Are you sure?</span>`;
 
-  deleteYes.addEventListener("click", async () => {
-    deleteYes.disabled = true;
-    deleteYes.textContent = "Deleting...";
-    try {
-      await deleteFile(url, { fetch: authFetch });
-      const deletedName = decodeURIComponent(url.split("/").filter(Boolean).pop() ?? url);
-      contentEl.innerHTML = `<p class="viewer-success">Deleted ${escapeHtml(deletedName)}</p>`;
-      onDeleted();
-    } catch (err: any) {
-      deleteYes.textContent = "Failed";
-      console.error("Delete failed:", err);
-    }
+    const yesBtn = document.createElement("button");
+    yesBtn.className = "btn btn-danger btn-sm";
+    yesBtn.textContent = "Yes, delete";
+    confirmPanel.appendChild(yesBtn);
+
+    const noBtn = document.createElement("button");
+    noBtn.className = "btn btn-secondary btn-sm";
+    noBtn.textContent = "Cancel";
+    confirmPanel.appendChild(noBtn);
+
+    actions.appendChild(confirmPanel);
+
+    noBtn.addEventListener("click", () => {
+      confirmPanel.remove();
+      deleteBtn.classList.remove("hidden");
+    });
+
+    yesBtn.addEventListener("click", async () => {
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+      yesBtn.textContent = "Deleting...";
+      try {
+        await deleteFile(url, { fetch: authFetch });
+        const deletedName = decodeURIComponent(url.split("/").filter(Boolean).pop() ?? url);
+        contentEl.innerHTML = `<p class="viewer-success">Deleted ${escapeHtml(deletedName)}</p>`;
+        onDeleted();
+      } catch (err: any) {
+        yesBtn.textContent = "Failed";
+        console.error("Delete failed:", err);
+      }
+    });
   });
 
   return toolbar;
@@ -276,47 +279,49 @@ export function loadContainerView(opts: ContainerViewerOptions): void {
   deleteBtn.textContent = "Delete container";
   actions.appendChild(deleteBtn);
 
-  const deleteConfirmPanel = document.createElement("div");
-  deleteConfirmPanel.className = "delete-confirm-panel hidden";
-
-  if (childCount > 0) {
-    deleteConfirmPanel.innerHTML = `<span>Delete all ${childCount} item${childCount !== 1 ? "s" : ""} and this container?</span>`;
-  } else {
-    deleteConfirmPanel.innerHTML = `<span>Are you sure?</span>`;
-  }
-
-  const deleteYes = document.createElement("button");
-  deleteYes.className = "btn btn-danger btn-sm";
-  deleteYes.textContent = "Yes, delete";
-  deleteConfirmPanel.appendChild(deleteYes);
-
-  const deleteNo = document.createElement("button");
-  deleteNo.className = "btn btn-secondary btn-sm";
-  deleteNo.textContent = "Cancel";
-  deleteConfirmPanel.appendChild(deleteNo);
-
-  actions.appendChild(deleteConfirmPanel);
   contentEl.appendChild(actions);
 
   deleteBtn.addEventListener("click", () => {
-    deleteConfirmPanel.classList.toggle("hidden");
-  });
+    deleteBtn.classList.add("hidden");
 
-  deleteNo.addEventListener("click", () => {
-    deleteConfirmPanel.classList.add("hidden");
-  });
+    const prompt = childCount > 0
+      ? `Delete all ${childCount} item${childCount !== 1 ? "s" : ""} and this container?`
+      : "Delete this empty container?";
 
-  deleteYes.addEventListener("click", async () => {
-    deleteYes.disabled = true;
-    deleteYes.textContent = "Deleting...";
-    try {
-      await deleteContainerRecursive(url, authFetch);
-      contentEl.innerHTML = `<p class="viewer-success">Deleted ${escapeHtml(name)}</p>`;
-      onDeleted();
-    } catch (err: any) {
-      deleteYes.textContent = "Failed";
-      console.error("Delete container failed:", err);
-    }
+    const confirmPanel = document.createElement("div");
+    confirmPanel.className = "delete-confirm-panel";
+    confirmPanel.innerHTML = `<span>${prompt}</span>`;
+
+    const yesBtn = document.createElement("button");
+    yesBtn.className = "btn btn-danger btn-sm";
+    yesBtn.textContent = "Yes, delete";
+    confirmPanel.appendChild(yesBtn);
+
+    const noBtn = document.createElement("button");
+    noBtn.className = "btn btn-secondary btn-sm";
+    noBtn.textContent = "Cancel";
+    confirmPanel.appendChild(noBtn);
+
+    actions.appendChild(confirmPanel);
+
+    noBtn.addEventListener("click", () => {
+      confirmPanel.remove();
+      deleteBtn.classList.remove("hidden");
+    });
+
+    yesBtn.addEventListener("click", async () => {
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+      yesBtn.textContent = "Deleting...";
+      try {
+        await deleteContainerRecursive(url, authFetch);
+        contentEl.innerHTML = `<p class="viewer-success">Deleted ${escapeHtml(name)}</p>`;
+        onDeleted();
+      } catch (err: any) {
+        yesBtn.textContent = "Failed";
+        console.error("Delete container failed:", err);
+      }
+    });
   });
 }
 
@@ -324,7 +329,7 @@ async function deleteContainerRecursive(
   containerUrl: string,
   authFetch: typeof fetch
 ): Promise<void> {
-  // List contents by fetching the container as Turtle and parsing ldp:contains
+  // List contents by fetching the container as Turtle
   const res = await authFetch(containerUrl, {
     headers: { Accept: "text/turtle" },
   });
@@ -333,13 +338,7 @@ async function deleteContainerRecursive(
   }
 
   const turtle = await res.text();
-  // Extract ldp:contains URLs from the Turtle response
-  const containsRegex = /<http:\/\/www\.w3\.org\/ns\/ldp#contains>\s+<([^>]+)>/g;
-  const children: string[] = [];
-  let match;
-  while ((match = containsRegex.exec(turtle)) !== null) {
-    children.push(match[1]);
-  }
+  const children = parseContainedUrls(turtle, containerUrl);
 
   // Delete children — recurse into sub-containers first
   for (const child of children) {
