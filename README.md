@@ -7,26 +7,51 @@ Built as a **reference implementation** demonstrating authentication, pod traver
 ## Architecture
 
 ```
-┌─────────────────────┐    ┌─────────────────────────────────────────┐
-│   Pod Manager       │    │   Data Requester                        │
-│   (Vite :5173)      │    │   Express :5174 → Vite :5175            │
-│                     │    │                                         │
-│  Browser-only SPA   │    │  Server-side auth + frontend SPA        │
-│  • OIDC login       │    │  • OIDC via solid-client-authn-node     │
-│  • Pod spidering    │    │  • Access grant queries on server       │
-│  • Index publishing │    │  • Claude AI chatbot (server-side key)  │
-│  • Grant management │    │  • Proxies API calls to Solid + AI      │
-└────────┬────────────┘    └────────┬────────────────────────────────┘
-         │                          │
-         │  POST /register          │  GET /search, /directory
-         │  POST /refresh-index     │  GET /lookup
-         ▼                          ▼
-┌─────────────────────────────────────────────┐
-│   Discovery Server (Express :3001)          │
-│   • WebID registration + public index cache │
-│   • Substring search across users           │
-│   • In-memory store with JSON persistence   │
-└─────────────────────────────────────────────┘
+                        ┌───────────────────────────────────────────┐
+                        │        Inrupt Pod Spaces (ESS)            │
+                        │         login.inrupt.com                  │
+                        │                                           │
+                        │  ┌─────────────┐    ┌──────────────────┐  │
+                        │  │  WebID      │    │  Solid Pod       │  │
+                        │  │  Profile    │    │  (storage.       │  │
+                        │  │  (id.       │    │   inrupt.com)    │  │
+                        │  │   inrupt.   │    │                  │  │
+                        │  │   com)      │    │  • Resources     │  │
+                        │  │             │    │  • Containers    │  │
+                        │  └─────────────┘    │  • public-       │  │
+                        │                     │    index.ttl     │  │
+                        │  ┌──────────────┐   │  • Access rules  │  │
+                        │  │ VC Service   │   └──────────────────┘  │
+                        │  │ (vc.inrupt.  │                         │
+                        │  │  com)        │                         │
+                        │  │ • Grants     │                         │
+                        │  │ • Requests   │                         │
+                        │  └──────────────┘                         │
+                        └──────────┬────────────────────────────────┘
+                                   │  OIDC + Solid Protocol
+                     ┌─────────────┴──────────────┐
+                     │                             │
+                     ▼                             ▼
+┌─────────────────────────┐    ┌─────────────────────────────────────────┐
+│   Pod Manager           │    │   Data Requester                        │
+│   (Vite :5173)          │    │   Express :5174 → Vite :5175            │
+│                         │    │                                         │
+│  Browser-only SPA       │    │  Server-side auth + frontend SPA        │
+│  • OIDC login (browser) │    │  • OIDC via solid-client-authn-node     │
+│  • Spider pod contents  │    │  • Access grant queries via VC service  │
+│  • Publish public index │    │  • Fetch resources using grant VCs      │
+│  • Approve/deny grants  │    │  • Claude AI chatbot (server-side key)  │
+└────────┬────────────────┘    └────────┬────────────────────────────────┘
+         │                              │
+         │  POST /register              │  GET /search, /directory
+         │  POST /refresh-index         │  GET /lookup
+         ▼                              ▼
+┌─────────────────────────────────────────────────┐
+│   Discovery Server (Express :3001)              │
+│   • WebID registration + public index caching   │
+│   • Substring search across users & resources   │
+│   • In-memory store with JSON file persistence  │
+└─────────────────────────────────────────────────┘
 ```
 
 ### Workspaces
