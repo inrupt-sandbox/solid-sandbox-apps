@@ -11,6 +11,7 @@ import {
 } from "./access-grants.js";
 import { renderAuthPanel } from "./ui/auth-panel.js";
 import { renderTreeView } from "./ui/tree-view.js";
+import type { TreeCallbacks } from "./ui/tree-view.js";
 import {
   renderStatusBar,
   renderStatusDone,
@@ -18,6 +19,8 @@ import {
 } from "./ui/status-bar.js";
 import { renderAccessPanel } from "./ui/access-panel.js";
 import { renderGrantsPanel } from "./ui/grants-panel.js";
+import { initUploadPanel, setUploadTarget } from "./ui/upload-panel.js";
+import { loadResource } from "./ui/data-viewer.js";
 import { DiscoveryClient } from "@solid-ecosystem/shared";
 import type { DirectoryEntry, PodResource } from "@solid-ecosystem/shared";
 
@@ -25,6 +28,19 @@ const discovery = new DiscoveryClient();
 
 let currentResources: PodResource[] = [];
 let currentPodUrl: string | undefined;
+
+function initTabs(): void {
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".tab");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.classList.remove("active"));
+      document.querySelectorAll(".tab-pane").forEach((p) => p.classList.remove("active"));
+      tab.classList.add("active");
+      const pane = document.getElementById(`tab-${tab.dataset.tab}`);
+      pane?.classList.add("active");
+    });
+  });
+}
 
 async function main(): Promise<void> {
   await initAuth();
@@ -36,14 +52,69 @@ async function main(): Promise<void> {
   const podActions = document.getElementById("pod-actions")!;
   const accessRequests = document.getElementById("access-requests")!;
   const activeGrantsEl = document.getElementById("active-grants")!;
+  const uploadArea = document.getElementById("upload-area")!;
+  const viewerTitle = document.getElementById("viewer-title")!;
+  const viewerContent = document.getElementById("viewer-content")!;
 
   renderAuthPanel(authSection);
 
   if (!isLoggedIn()) return;
 
   content.classList.remove("hidden");
+  initTabs();
+
   const webId = getWebId()!;
   const authFetch = getAuthFetch();
+
+  function getContainerUrls(): string[] {
+    return currentResources
+      .filter((r) => r.type === "container")
+      .map((r) => r.url)
+      .sort((a, b) => a.length - b.length);
+  }
+
+  const treeCallbacks: TreeCallbacks = {
+    onSelectResource(url: string) {
+      loadResource({
+        url,
+        authFetch,
+        titleEl: viewerTitle,
+        contentEl: viewerContent,
+        containerUrls: getContainerUrls(),
+        onMoved: () => refreshPod(),
+      });
+    },
+    onSelectContainer(url: string) {
+      setUploadTarget(url);
+    },
+  };
+
+  function renderTree(resources: PodResource[]): void {
+    renderTreeView(podTree, resources, treeCallbacks);
+  }
+
+  // Init upload panel (starts empty until a container is selected)
+  initUploadPanel(uploadArea, authFetch, () => refreshPod());
+
+  async function refreshPod(): Promise<void> {
+    try {
+      const resources = await spiderPod(
+        webId,
+        authFetch,
+        () => {},
+        (partial) => {
+          currentResources = partial;
+          currentPodUrl = getPodUrl(partial);
+          renderTree(partial);
+        }
+      );
+      currentResources = resources;
+      currentPodUrl = getPodUrl(resources);
+      renderTree(resources);
+    } catch (err) {
+      console.error("Re-spider failed:", err);
+    }
+  }
 
   // Load access requests and grants immediately (don't wait for spider)
   async function loadAccessRequests(): Promise<void> {
@@ -111,7 +182,7 @@ async function main(): Promise<void> {
       (partial) => {
         currentResources = partial;
         currentPodUrl = getPodUrl(partial);
-        renderTreeView(podTree, partial);
+        renderTree(partial);
       }
     );
 
@@ -145,7 +216,7 @@ function renderActionButtons(
 ): void {
   const publishBtn = document.createElement("button");
   publishBtn.id = "publish-btn";
-  publishBtn.className = "btn btn-primary";
+  publishBtn.className = "btn btn-primary btn-sm";
   publishBtn.textContent = "Publish Index";
 
   container.innerHTML = "";
@@ -154,7 +225,7 @@ function renderActionButtons(
   if (!isRegistered) {
     const registerBtn = document.createElement("button");
     registerBtn.id = "register-btn";
-    registerBtn.className = "btn btn-secondary";
+    registerBtn.className = "btn btn-secondary btn-sm";
     registerBtn.textContent = "Register with Discovery";
     container.appendChild(registerBtn);
 
@@ -174,7 +245,7 @@ function renderActionButtons(
   } else if (!isIndexUpToDate) {
     const updateBtn = document.createElement("button");
     updateBtn.id = "update-registry-btn";
-    updateBtn.className = "btn btn-secondary";
+    updateBtn.className = "btn btn-secondary btn-sm";
     updateBtn.textContent = "Update Registry";
     container.appendChild(updateBtn);
 
