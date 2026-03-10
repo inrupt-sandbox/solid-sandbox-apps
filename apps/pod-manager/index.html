@@ -15,20 +15,43 @@
     <main>
       <div id="status-bar" class="hidden"></div>
       <div id="content" class="hidden">
-        <div class="panels">
-          <section id="pod-tree-panel">
-            <h2>Pod Contents</h2>
-            <div id="pod-tree"></div>
-            <div id="pod-actions"></div>
-          </section>
-          <section id="access-panel">
-            <h2>Access Requests</h2>
-            <div id="access-requests"></div>
-          </section>
-          <section id="active-grants-panel">
-            <h2>Active Grants</h2>
-            <div id="active-grants"></div>
-          </section>
+        <nav class="tabs">
+          <button class="tab active" data-tab="pod-browser">Pod Browser</button>
+          <button class="tab" data-tab="access">Access</button>
+        </nav>
+        <div class="tab-content">
+          <div id="tab-pod-browser" class="tab-pane active">
+            <div class="browser-layout">
+              <section id="pod-tree-panel">
+                <div class="section-header">
+                  <h2>Pod Contents</h2>
+                  <div id="pod-actions"></div>
+                </div>
+                <div id="pod-tree"></div>
+                <div id="upload-area"></div>
+              </section>
+              <section id="viewer-panel">
+                <div class="section-header">
+                  <h2 id="viewer-title">Data Viewer</h2>
+                </div>
+                <div id="viewer-content">
+                  <p class="muted">Select a resource to view its contents</p>
+                </div>
+              </section>
+            </div>
+          </div>
+          <div id="tab-access" class="tab-pane">
+            <div class="access-columns">
+              <section id="access-panel">
+                <h2>Access Requests</h2>
+                <div id="access-requests"></div>
+              </section>
+              <section id="active-grants-panel">
+                <h2>Active Grants</h2>
+                <div id="active-grants"></div>
+              </section>
+            </div>
+          </div>
         </div>
       </div>
     </main>

@@ -9,6 +9,10 @@ import {
   getExpirationDate,
   getIssuanceDate,
   getId,
+  getPurposes,
+  getInherit,
+  getResourceOwner,
+  getIssuer,
   type CredentialResult,
 } from "@inrupt/solid-client-access-grants";
 import type { DatasetWithId } from "@inrupt/solid-client-vc";
@@ -20,6 +24,12 @@ export interface AccessRequestInfo {
   requestorWebId: string;
   resourceUrls: string[];
   modes: string[];
+  purposes: string[];
+  requestedAt: string | null;
+  expiresAt: string | null;
+  resourceOwner: string | undefined;
+  issuer: string | undefined;
+  inherit: boolean;
   vc: DatasetWithId;
 }
 
@@ -32,13 +42,23 @@ export async function fetchAccessRequests(
       { fetch: authFetch, queryEndpoint: QUERY_ENDPOINT }
     );
 
-    return result.items.map((vc) => ({
-      id: getId(vc),
-      requestorWebId: getRequestor(vc),
-      resourceUrls: getResources(vc).map(String),
-      modes: formatModes(getAccessModes(vc)),
-      vc,
-    }));
+    return result.items.map((vc) => {
+      const issDate = getIssuanceDate(vc);
+      const expDate = getExpirationDate(vc);
+      return {
+        id: getId(vc),
+        requestorWebId: getRequestor(vc),
+        resourceUrls: getResources(vc).map(String),
+        modes: formatModes(getAccessModes(vc)),
+        purposes: getPurposes(vc).map(String),
+        requestedAt: issDate ? issDate.toISOString() : null,
+        expiresAt: expDate ? expDate.toISOString() : null,
+        resourceOwner: getResourceOwner(vc),
+        issuer: getIssuer(vc),
+        inherit: getInherit(vc),
+        vc,
+      };
+    });
   } catch (err) {
     console.error("Failed to fetch access requests:", err);
     return [];

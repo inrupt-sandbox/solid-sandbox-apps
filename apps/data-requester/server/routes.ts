@@ -222,7 +222,10 @@ apiRouter.post("/request-access", async (req, res) => {
     };
 
     if (purpose) {
-      params.purpose = [purpose];
+      const purposeUrl = looksLikeUrl(purpose)
+        ? purpose
+        : `https://example.com/${encodeURIComponent(purpose)}`;
+      params.purpose = [purposeUrl];
     }
 
     const result = await issueAccessRequest(params, {
@@ -280,6 +283,15 @@ apiRouter.get("/pod-index", async (req, res) => {
 });
 
 // ---------- Helpers ----------
+
+function looksLikeUrl(s: string): boolean {
+  try {
+    const u = new URL(s);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 function formatModes(modes: { read?: boolean; write?: boolean; append?: boolean }): string[] {
   const result: string[] = [];
