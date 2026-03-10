@@ -44,6 +44,19 @@ You need a Solid Pod on Inrupt Pod Spaces. Go to [start.inrupt.com](https://star
 
 You'll log in with these credentials when using the Pod Manager and Data Requester apps.
 
+### Client Credentials (for server-side auth)
+
+The Data Requester's Express server uses client credentials for server-side OIDC. To generate them:
+
+1. Go to [login.inrupt.com](https://login.inrupt.com)
+2. Log in with your Pod Spaces account
+3. Navigate to **Application Registration** (or visit `https://login.inrupt.com/registration.html` directly)
+4. Fill in your app name and redirect URL (e.g. `http://localhost:5174/auth/callback`)
+5. Click **Register** — you'll receive a **Client ID** and **Client Secret**
+6. Copy these into your `.env` file as `SOLID_CLIENT_ID` and `SOLID_CLIENT_SECRET`
+
+These credentials are also needed if you run any of the utility scripts (e.g. `scripts/upload-client-id.ts`).
+
 ## Getting Started
 
 ```bash
