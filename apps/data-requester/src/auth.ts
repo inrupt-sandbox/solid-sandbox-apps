@@ -1,37 +1,29 @@
-import { Session } from "@inrupt/solid-client-authn-browser";
-
-const OIDC_ISSUER = "https://login.inrupt.com";
-const CLIENT_ID = import.meta.env.VITE_SOLID_CLIENT_ID;
-
-const session = new Session();
+let loggedIn = false;
+let webId: string | undefined;
 
 export async function initAuth(): Promise<void> {
-  await session.handleIncomingRedirect({ restorePreviousSession: true });
+  try {
+    const res = await fetch("/auth/status");
+    const data = await res.json();
+    loggedIn = data.loggedIn === true;
+    webId = data.webId;
+  } catch {
+    loggedIn = false;
+  }
 }
 
 export function login(): void {
-  session.login({
-    oidcIssuer: OIDC_ISSUER,
-    redirectUrl: window.location.href,
-    tokenType: "Bearer",
-    clientId: CLIENT_ID,
-  });
+  window.location.href = "/auth/login";
 }
 
 export function logout(): void {
-  session.logout();
+  window.location.href = "/auth/logout";
 }
 
 export function isLoggedIn(): boolean {
-  return session.info.isLoggedIn === true;
+  return loggedIn;
 }
 
 export function getWebId(): string | undefined {
-  return session.info.webId;
+  return webId;
 }
-
-export function getAuthFetch(): typeof fetch {
-  return session.fetch;
-}
-
-export { session };
