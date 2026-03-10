@@ -21,13 +21,16 @@ export function renderGrantsPanel(
       : "No expiration";
 
     const resourceList = grant.resourceUrls
-      .map(
-        (u) =>
-          `<li>
+      .map((u) => {
+        const isContainer = u.endsWith("/");
+        const viewBtn = isContainer
+          ? `<span class="muted">(container)</span>`
+          : `<button class="btn btn-small view-btn" data-url="${escapeHtml(u)}">View</button>`;
+        return `<li>
             <span class="resource-url">${escapeHtml(u)}</span>
-            <button class="btn btn-small view-btn" data-url="${escapeHtml(u)}">View</button>
-          </li>`
-      )
+            ${viewBtn}
+          </li>`;
+      })
       .join("");
 
     card.innerHTML = `

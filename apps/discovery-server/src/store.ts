@@ -32,12 +32,12 @@ export class Store {
     writeFileSync(DATA_FILE, JSON.stringify(this.getAll(), null, 2));
   }
 
-  register(webId: string, name?: string): DirectoryEntry {
+  register(webId: string, name?: string, podUrl?: string): DirectoryEntry {
     const existing = this.entries.get(webId);
     const entry: DirectoryEntry = {
       webId,
       name: name ?? existing?.name,
-      podUrl: existing?.podUrl,
+      podUrl: podUrl ?? existing?.podUrl,
       registeredAt: existing?.registeredAt ?? new Date().toISOString(),
       index: existing?.index,
     };

@@ -6,13 +6,13 @@ const store = new Store();
 const router = Router();
 
 router.post("/register", async (req: Request, res: Response) => {
-  const { webId, name } = req.body;
+  const { webId, name, podUrl } = req.body;
   if (!webId || typeof webId !== "string") {
     res.status(400).json({ error: "webId is required" });
     return;
   }
 
-  const entry = store.register(webId, name);
+  const entry = store.register(webId, name, podUrl);
 
   // Try to fetch and cache their public index in the background
   if (entry.podUrl) {
@@ -43,7 +43,7 @@ router.get("/lookup", (req: Request, res: Response) => {
 });
 
 router.post("/refresh-index", async (req: Request, res: Response) => {
-  const { webId } = req.body;
+  const { webId, podUrl } = req.body;
   if (!webId || typeof webId !== "string") {
     res.status(400).json({ error: "webId is required" });
     return;
@@ -53,11 +53,12 @@ router.post("/refresh-index", async (req: Request, res: Response) => {
     res.status(404).json({ error: "Not registered" });
     return;
   }
-  if (!entry.podUrl) {
+  const effectivePodUrl = entry.podUrl ?? podUrl;
+  if (!effectivePodUrl) {
     res.status(400).json({ error: "No pod URL known for this user" });
     return;
   }
-  const index = await fetchPublicIndex(entry.podUrl);
+  const index = await fetchPublicIndex(effectivePodUrl);
   if (index) {
     store.updateIndex(webId, index);
     res.json(store.get(webId));

@@ -7,6 +7,9 @@ export async function requestAccess(
   authFetch: typeof fetch,
   purpose?: string
 ): Promise<any> {
+  // Check if any selected resources are containers (end with /)
+  const hasContainers = resourceUrls.some((u) => u.endsWith("/"));
+
   const params: any = {
     access: {
       read: modes.includes("Read"),
@@ -15,6 +18,7 @@ export async function requestAccess(
     },
     resources: resourceUrls,
     resourceOwner: ownerWebId,
+    inherit: hasContainers, // Cascade grant to resources within containers
   };
 
   if (purpose) {

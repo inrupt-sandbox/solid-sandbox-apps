@@ -15,11 +15,13 @@ export interface SpiderProgress {
 }
 
 type ProgressCallback = (progress: SpiderProgress) => void;
+type ResourcesCallback = (resources: PodResource[]) => void;
 
 export async function spiderPod(
   webId: string,
   authFetch: typeof fetch,
-  onProgress?: ProgressCallback
+  onProgress?: ProgressCallback,
+  onResources?: ResourcesCallback
 ): Promise<PodResource[]> {
   const podUrls = await getPodUrlAll(webId, { fetch: authFetch });
   if (podUrls.length === 0) {
@@ -81,6 +83,7 @@ export async function spiderPod(
     for (const childContainers of results) {
       queue.push(...childContainers);
     }
+    onResources?.(resources);
   }
 
   return resources;
