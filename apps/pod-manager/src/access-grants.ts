@@ -11,6 +11,8 @@ import {
   getId,
   getPurposes,
   getInherit,
+  getResourceOwner,
+  getIssuer,
   type CredentialResult,
 } from "@inrupt/solid-client-access-grants";
 import type { DatasetWithId } from "@inrupt/solid-client-vc";
@@ -24,6 +26,9 @@ export interface AccessRequestInfo {
   modes: string[];
   purposes: string[];
   requestedAt: string | null;
+  expiresAt: string | null;
+  resourceOwner: string | undefined;
+  issuer: string | undefined;
   inherit: boolean;
   vc: DatasetWithId;
 }
@@ -39,6 +44,7 @@ export async function fetchAccessRequests(
 
     return result.items.map((vc) => {
       const issDate = getIssuanceDate(vc);
+      const expDate = getExpirationDate(vc);
       return {
         id: getId(vc),
         requestorWebId: getRequestor(vc),
@@ -46,6 +52,9 @@ export async function fetchAccessRequests(
         modes: formatModes(getAccessModes(vc)),
         purposes: getPurposes(vc).map(String),
         requestedAt: issDate ? issDate.toISOString() : null,
+        expiresAt: expDate ? expDate.toISOString() : null,
+        resourceOwner: getResourceOwner(vc),
+        issuer: getIssuer(vc),
         inherit: getInherit(vc),
         vc,
       };

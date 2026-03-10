@@ -21,25 +21,39 @@ export function renderAccessPanel(
       ? new Date(req.requestedAt).toLocaleString()
       : null;
 
-    const purposeHtml = req.purposes.length > 0
-      ? `<p class="request-purpose">${escapeHtml(req.purposes.join(", "))}</p>`
-      : "";
+    const expiry = req.expiresAt
+      ? new Date(req.expiresAt).toLocaleString()
+      : "No expiration";
+
+    const purposeText = req.purposes.length > 0
+      ? req.purposes.map(formatPurpose).join(", ")
+      : "None specified";
+    const purposeHtml = `<p class="request-purpose">Purpose: ${escapeHtml(purposeText)}</p>`;
 
     const inheritNote = req.inherit
       ? ` <span class="badge badge-info" title="Access will cascade to all resources within requested containers">+ children</span>`
       : "";
 
+    const metaItems: string[] = [];
+    if (requestDate) metaItems.push(`<span>Requested: ${requestDate}</span>`);
+    metaItems.push(`<span>Expires: ${expiry}</span>`);
+    if (req.resourceOwner) metaItems.push(`<span>Owner: ${escapeHtml(shortenWebId(req.resourceOwner))}</span>`);
+    if (req.issuer) metaItems.push(`<span>Issuer: ${escapeHtml(shortenHost(req.issuer))}</span>`);
+    metaItems.push(`<span>ID: <code title="${escapeHtml(req.id)}">${escapeHtml(shortenUrl(req.id))}</code></span>`);
+
     card.innerHTML = `
       <div class="access-info">
         <div class="request-header">
           <strong>${escapeHtml(req.requestorWebId)}</strong>
-          ${requestDate ? `<span class="request-date">${requestDate}</span>` : ""}
         </div>
         ${purposeHtml}
         <p>
           ${req.modes.map((m) => `<span class="badge badge-mode">${m}</span>`).join(" ")}
           ${inheritNote}
         </p>
+        <div class="request-meta">
+          ${metaItems.join(" &middot; ")}
+        </div>
         <ul class="resource-list">
           ${req.resourceUrls.map((u) => `<li title="${escapeHtml(u)}">${escapeHtml(shortenUrl(u))}</li>`).join("")}
         </ul>
@@ -68,6 +82,38 @@ function shortenUrl(url: string): string {
     return u.pathname;
   } catch {
     return url;
+  }
+}
+
+/** Extract a human-readable label from a purpose URI */
+function formatPurpose(uri: string): string {
+  try {
+    const u = new URL(uri);
+    // If it's our example.com convention, decode the path back to the original string
+    if (u.hostname === "example.com" && u.pathname.length > 1) {
+      return decodeURIComponent(u.pathname.slice(1));
+    }
+    // Otherwise show the full URI
+    return uri;
+  } catch {
+    return uri;
+  }
+}
+
+function shortenHost(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
+
+function shortenWebId(webId: string): string {
+  try {
+    const u = new URL(webId);
+    return u.pathname === "/" ? u.hostname : `${u.hostname}${u.pathname}`;
+  } catch {
+    return webId;
   }
 }
 

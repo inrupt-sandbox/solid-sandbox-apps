@@ -435,6 +435,23 @@ li.collapsed > ul {
   font-style: italic;
 }
 
+.request-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: #718096;
+  margin: 0.35rem 0;
+  padding: 0.4rem 0.6rem;
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.request-meta code {
+  font-family: monospace;
+  font-size: 0.7rem;
+}
+
 .badge {
   display: inline-block;
   padding: 0.1rem 0.45rem;
