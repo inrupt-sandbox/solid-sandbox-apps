@@ -5,14 +5,31 @@ export function renderAccessPanel(
   container: HTMLElement,
   requests: AccessRequestInfo[],
   onApprove: (id: string) => void,
-  onDeny: (id: string) => void
+  onDeny: (id: string) => void,
+  onRefresh?: () => void
 ): void {
-  if (requests.length === 0) {
-    container.innerHTML = `<p class="muted">No pending access requests.</p>`;
-    return;
+  container.innerHTML = "";
+
+  // Refresh button
+  if (onRefresh) {
+    const refreshBtn = document.createElement("button");
+    refreshBtn.className = "btn btn-secondary btn-sm refresh-btn";
+    refreshBtn.textContent = "Refresh";
+    refreshBtn.addEventListener("click", () => {
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = "Refreshing...";
+      onRefresh();
+    });
+    container.appendChild(refreshBtn);
   }
 
-  container.innerHTML = "";
+  if (requests.length === 0) {
+    const msg = document.createElement("p");
+    msg.className = "muted";
+    msg.textContent = "No pending access requests.";
+    container.appendChild(msg);
+    return;
+  }
 
   for (const req of requests) {
     const card = document.createElement("div");

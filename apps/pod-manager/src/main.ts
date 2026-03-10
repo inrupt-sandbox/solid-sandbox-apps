@@ -154,7 +154,8 @@ async function main(): Promise<void> {
           } catch (err) {
             console.error("Deny failed:", err);
           }
-        }
+        },
+        () => loadAccessRequests()
       );
     } catch (err) {
       accessRequests.innerHTML = `<p class="muted">Could not load access requests.</p>`;
