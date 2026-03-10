@@ -6,7 +6,8 @@ export function renderTreeView(
 ): void {
   const tree = buildTree(resources);
   container.innerHTML = "";
-  const ul = renderNode(tree);
+  // Render root expanded, first-level children expanded, deeper collapsed
+  const ul = renderSubtree([tree], 0);
   container.appendChild(ul);
 }
 
@@ -79,78 +80,37 @@ function buildTree(resources: PodResource[]): TreeNode {
   return rootNode;
 }
 
-function renderNode(node: TreeNode): HTMLUListElement {
+function renderSubtree(nodes: TreeNode[], depth: number): HTMLUListElement {
   const ul = document.createElement("ul");
   ul.className = "tree";
 
-  const li = document.createElement("li");
-  const icon = node.type === "container" ? "📁" : "📄";
-  const span = document.createElement("span");
-  span.className = `tree-item tree-${node.type}`;
-  span.textContent = `${icon} ${node.name}`;
-  span.title = node.url;
-
-  if (node.type === "container" && node.children.length > 0) {
-    span.addEventListener("click", () => {
-      li.classList.toggle("collapsed");
-    });
-  }
-
-  li.appendChild(span);
-
-  if (node.children.length > 0) {
-    const childUl = document.createElement("ul");
-    for (const child of node.children.sort((a, b) => {
-      if (a.type !== b.type) return a.type === "container" ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    })) {
-      const childLi = document.createElement("li");
-      const childIcon = child.type === "container" ? "📁" : "📄";
-      const childSpan = document.createElement("span");
-      childSpan.className = `tree-item tree-${child.type}`;
-      childSpan.textContent = `${childIcon} ${child.name}`;
-      childSpan.title = child.url;
-
-      childLi.appendChild(childSpan);
-
-      if (child.children.length > 0) {
-        childSpan.addEventListener("click", () => {
-          childLi.classList.toggle("collapsed");
-        });
-        const grandchildUl = renderNode(child);
-        childLi.appendChild(grandchildUl.firstElementChild!.querySelector("ul") ?? renderSubtree(child.children));
-      }
-
-      childUl.appendChild(childLi);
-    }
-    li.appendChild(childUl);
-  }
-
-  ul.appendChild(li);
-  return ul;
-}
-
-function renderSubtree(children: TreeNode[]): HTMLUListElement {
-  const ul = document.createElement("ul");
-  for (const child of children.sort((a, b) => {
+  const sorted = nodes.sort((a, b) => {
     if (a.type !== b.type) return a.type === "container" ? -1 : 1;
     return a.name.localeCompare(b.name);
-  })) {
+  });
+
+  for (const node of sorted) {
     const li = document.createElement("li");
-    const icon = child.type === "container" ? "📁" : "📄";
+    // Only root (depth 0) is expanded; everything else starts collapsed
+    if (depth > 0 && node.children.length > 0) {
+      li.classList.add("collapsed");
+    }
+
+    const icon = node.type === "container" ? "📁" : "📄";
     const span = document.createElement("span");
-    span.className = `tree-item tree-${child.type}`;
-    span.textContent = `${icon} ${child.name}`;
-    span.title = child.url;
+    span.className = `tree-item tree-${node.type}`;
+    span.textContent = `${icon} ${node.name}`;
+    span.title = node.url;
     li.appendChild(span);
 
-    if (child.children.length > 0) {
+    if (node.children.length > 0) {
       span.addEventListener("click", () => li.classList.toggle("collapsed"));
-      li.appendChild(renderSubtree(child.children));
+      li.appendChild(renderSubtree(node.children, depth + 1));
     }
 
     ul.appendChild(li);
   }
+
   return ul;
 }
 

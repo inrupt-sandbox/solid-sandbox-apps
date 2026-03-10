@@ -45,40 +45,7 @@ async function main(): Promise<void> {
   const webId = getWebId()!;
   const authFetch = getAuthFetch();
 
-  // Check discovery registration status in parallel with pod spider
-  const registryCheck: Promise<DirectoryEntry | null> = discovery.lookup(webId).catch(() => null);
-
-  // Start spider
-  statusBar.classList.remove("hidden");
-  statusBar.innerHTML = `<div class="status-content"><span class="spinner"></span> Starting pod scan...</div>`;
-
-  try {
-    const resources = await spiderPod(webId, authFetch, (progress) => {
-      renderStatusBar(statusBar, progress);
-    });
-
-    currentResources = resources;
-    currentPodUrl = getPodUrl(resources);
-
-    renderStatusDone(statusBar, resources.length);
-    renderTreeView(podTree, resources);
-
-    // Wait for registry check to finish before rendering buttons
-    const registryEntry = await registryCheck;
-
-    // Determine if registry index is up to date
-    const registryResourceCount = registryEntry?.index?.resources.length ?? 0;
-    const isRegistered = registryEntry !== null;
-    const isIndexUpToDate = isRegistered && registryResourceCount === resources.length;
-
-    // Render action buttons
-    renderActionButtons(podActions, webId, authFetch, isRegistered, isIndexUpToDate);
-  } catch (err: any) {
-    renderStatusError(statusBar, err.message);
-    return;
-  }
-
-  // Load access requests
+  // Load access requests and grants immediately (don't wait for spider)
   async function loadAccessRequests(): Promise<void> {
     try {
       const requests = await fetchAccessRequests(authFetch);
@@ -111,9 +78,6 @@ async function main(): Promise<void> {
     }
   }
 
-  await loadAccessRequests();
-
-  // Load active grants
   async function loadActiveGrants(): Promise<void> {
     try {
       const grants = await fetchActiveGrants(authFetch);
@@ -132,7 +96,44 @@ async function main(): Promise<void> {
     }
   }
 
-  await loadActiveGrants();
+  // Start grants/requests, registry check, and spider all in parallel
+  const grantsPromise = Promise.all([loadAccessRequests(), loadActiveGrants()]);
+  const registryCheck: Promise<DirectoryEntry | null> = discovery.lookup(webId).catch(() => null);
+
+  statusBar.classList.remove("hidden");
+  statusBar.innerHTML = `<div class="status-content"><span class="spinner"></span> Starting pod scan...</div>`;
+
+  try {
+    const resources = await spiderPod(
+      webId,
+      authFetch,
+      (progress) => renderStatusBar(statusBar, progress),
+      (partial) => {
+        currentResources = partial;
+        currentPodUrl = getPodUrl(partial);
+        renderTreeView(podTree, partial);
+      }
+    );
+
+    currentResources = resources;
+    currentPodUrl = getPodUrl(resources);
+
+    renderStatusDone(statusBar, resources.length);
+
+    // Wait for registry check to finish before rendering buttons
+    const registryEntry = await registryCheck;
+
+    const registryResourceCount = registryEntry?.index?.resources.length ?? 0;
+    const isRegistered = registryEntry !== null;
+    const isIndexUpToDate = isRegistered && registryResourceCount === resources.length;
+
+    renderActionButtons(podActions, webId, authFetch, isRegistered, isIndexUpToDate);
+  } catch (err: any) {
+    renderStatusError(statusBar, err.message);
+  }
+
+  // Ensure grants/requests finish even if spider fails
+  await grantsPromise;
 }
 
 function renderActionButtons(
@@ -161,7 +162,7 @@ function renderActionButtons(
       registerBtn.disabled = true;
       registerBtn.textContent = "Registering...";
       try {
-        await discovery.register(webId);
+        await discovery.register(webId, undefined, currentPodUrl);
         registerBtn.textContent = "Registered!";
         registerBtn.classList.add("btn-success");
       } catch (err: any) {
@@ -181,7 +182,7 @@ function renderActionButtons(
       updateBtn.disabled = true;
       updateBtn.textContent = "Updating...";
       try {
-        await discovery.refreshIndex(webId);
+        await discovery.refreshIndex(webId, currentPodUrl);
         updateBtn.textContent = "Registry Updated!";
         updateBtn.classList.add("btn-success");
       } catch (err: any) {
