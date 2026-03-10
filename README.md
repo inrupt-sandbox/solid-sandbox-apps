@@ -1,4 +1,4 @@
-# Solid Pod Ecosystem
+# Solid Ecosystem Sandbox
 
 Three interconnected apps for browsing, sharing, and discovering data across [Solid Pods](https://solidproject.org/) on [Inrupt Pod Spaces](https://start.inrupt.com/) (ESS).
 
