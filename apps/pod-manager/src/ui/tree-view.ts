@@ -1,13 +1,18 @@
 import type { PodResource } from "@solid-ecosystem/shared";
 
+export interface TreeCallbacks {
+  onSelectResource?: (url: string) => void;
+  onSelectContainer?: (url: string) => void;
+}
+
 export function renderTreeView(
   container: HTMLElement,
-  resources: PodResource[]
+  resources: PodResource[],
+  callbacks?: TreeCallbacks
 ): void {
   const tree = buildTree(resources);
   container.innerHTML = "";
-  // Render root expanded, first-level children expanded, deeper collapsed
-  const ul = renderSubtree([tree], 0);
+  const ul = renderSubtree([tree], 0, callbacks);
   container.appendChild(ul);
 }
 
@@ -80,7 +85,15 @@ function buildTree(resources: PodResource[]): TreeNode {
   return rootNode;
 }
 
-function renderSubtree(nodes: TreeNode[], depth: number): HTMLUListElement {
+function clearSelection(): void {
+  document.querySelectorAll(".tree-item.selected").forEach((el) => el.classList.remove("selected"));
+}
+
+function renderSubtree(
+  nodes: TreeNode[],
+  depth: number,
+  callbacks?: TreeCallbacks
+): HTMLUListElement {
   const ul = document.createElement("ul");
   ul.className = "tree";
 
@@ -101,11 +114,28 @@ function renderSubtree(nodes: TreeNode[], depth: number): HTMLUListElement {
     span.className = `tree-item tree-${node.type}`;
     span.textContent = `${icon} ${node.name}`;
     span.title = node.url;
+    span.dataset.url = node.url;
+    span.dataset.type = node.type;
     li.appendChild(span);
 
-    if (node.children.length > 0) {
-      span.addEventListener("click", () => li.classList.toggle("collapsed"));
-      li.appendChild(renderSubtree(node.children, depth + 1));
+    if (node.type === "container") {
+      span.classList.add("tree-selectable");
+      span.addEventListener("click", () => {
+        li.classList.toggle("collapsed");
+        clearSelection();
+        span.classList.add("selected");
+        callbacks?.onSelectContainer?.(node.url);
+      });
+      if (node.children.length > 0) {
+        li.appendChild(renderSubtree(node.children, depth + 1, callbacks));
+      }
+    } else {
+      span.classList.add("tree-selectable");
+      span.addEventListener("click", () => {
+        clearSelection();
+        span.classList.add("selected");
+        callbacks?.onSelectResource?.(node.url);
+      });
     }
 
     ul.appendChild(li);
