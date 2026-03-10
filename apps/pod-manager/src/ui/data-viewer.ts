@@ -1,4 +1,4 @@
-import { getFile } from "@inrupt/solid-client";
+import { getFile, deleteFile } from "@inrupt/solid-client";
 import { escapeHtml } from "@solid-ecosystem/shared";
 import { moveResource } from "../uploader.js";
 
@@ -61,10 +61,11 @@ export interface ViewerOptions {
   contentEl: HTMLElement;
   containerUrls: string[];
   onMoved: () => void;
+  onDeleted: () => void;
 }
 
 export async function loadResource(opts: ViewerOptions): Promise<void> {
-  const { url, authFetch, titleEl, contentEl, containerUrls, onMoved } = opts;
+  const { url, authFetch, titleEl, contentEl, containerUrls, onMoved, onDeleted } = opts;
   const name = decodeURIComponent(url.split("/").filter(Boolean).pop() ?? url);
   titleEl.textContent = name;
   contentEl.innerHTML = `<div class="viewer-loading"><span class="spinner"></span> Loading...</div>`;
@@ -75,7 +76,7 @@ export async function loadResource(opts: ViewerOptions): Promise<void> {
     const size = file.size;
 
     // Build toolbar
-    const toolbar = buildToolbar(url, ct, size, containerUrls, authFetch, contentEl, onMoved);
+    const toolbar = buildToolbar(url, ct, size, containerUrls, authFetch, contentEl, onMoved, onDeleted);
 
     // Build content
     let bodyHtml = "";
@@ -114,7 +115,8 @@ function buildToolbar(
   containerUrls: string[],
   authFetch: typeof fetch,
   contentEl: HTMLElement,
-  onMoved: () => void
+  onMoved: () => void,
+  onDeleted: () => void
 ): HTMLElement {
   const toolbar = document.createElement("div");
   toolbar.className = "viewer-toolbar";
@@ -166,6 +168,29 @@ function buildToolbar(
   movePanel.appendChild(cancelBtn);
 
   actions.appendChild(movePanel);
+
+  // Delete button
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "btn btn-danger btn-sm";
+  deleteBtn.textContent = "Delete";
+  actions.appendChild(deleteBtn);
+
+  const deleteConfirmPanel = document.createElement("div");
+  deleteConfirmPanel.className = "delete-confirm-panel hidden";
+  deleteConfirmPanel.innerHTML = `<span>Are you sure?</span>`;
+
+  const deleteYes = document.createElement("button");
+  deleteYes.className = "btn btn-danger btn-sm";
+  deleteYes.textContent = "Yes, delete";
+  deleteConfirmPanel.appendChild(deleteYes);
+
+  const deleteNo = document.createElement("button");
+  deleteNo.className = "btn btn-secondary btn-sm";
+  deleteNo.textContent = "Cancel";
+  deleteConfirmPanel.appendChild(deleteNo);
+
+  actions.appendChild(deleteConfirmPanel);
+
   toolbar.appendChild(actions);
 
   moveBtn.addEventListener("click", () => {
@@ -189,6 +214,28 @@ function buildToolbar(
       confirmBtn.textContent = "Failed";
       confirmBtn.classList.add("btn-danger");
       console.error("Move failed:", err);
+    }
+  });
+
+  deleteBtn.addEventListener("click", () => {
+    deleteConfirmPanel.classList.toggle("hidden");
+  });
+
+  deleteNo.addEventListener("click", () => {
+    deleteConfirmPanel.classList.add("hidden");
+  });
+
+  deleteYes.addEventListener("click", async () => {
+    deleteYes.disabled = true;
+    deleteYes.textContent = "Deleting...";
+    try {
+      await deleteFile(url, { fetch: authFetch });
+      const deletedName = decodeURIComponent(url.split("/").filter(Boolean).pop() ?? url);
+      contentEl.innerHTML = `<p class="viewer-success">Deleted ${escapeHtml(deletedName)}</p>`;
+      onDeleted();
+    } catch (err: any) {
+      deleteYes.textContent = "Failed";
+      console.error("Delete failed:", err);
     }
   });
 

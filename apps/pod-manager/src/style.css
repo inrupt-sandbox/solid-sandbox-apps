@@ -353,7 +353,8 @@ li.collapsed > ul {
   margin-top: 0.5rem;
 }
 
-.move-panel {
+.move-panel,
+.delete-confirm-panel {
   display: flex;
   align-items: center;
   gap: 0.4rem;

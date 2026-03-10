@@ -82,6 +82,7 @@ async function main(): Promise<void> {
         contentEl: viewerContent,
         containerUrls: getContainerUrls(),
         onMoved: () => refreshPod(),
+        onDeleted: () => refreshPod(),
       });
     },
     onSelectContainer(url: string) {
