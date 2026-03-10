@@ -36,7 +36,7 @@ graph TB
 | Workspace | Description |
 |-----------|-------------|
 | `packages/shared` | Types, RDF vocabulary, Turtle index builder/parser, discovery API client, shared utilities. Imported as `@solid-ecosystem/shared`. Exports raw `.ts` (no build step). |
-| `apps/pod-manager` | Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser`, spiders the user's pod, builds/publishes a `public-index.ttl`, registers with discovery, manages access requests and grants. |
+| `apps/pod-manager` | Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser`, spiders the user's pod, builds/publishes a `public-index.ttl`, registers with discovery, manages access requests and grants. Supports file upload, move, and delete (including recursive container deletion). |
 | `apps/data-requester` | Express server + Vite frontend. Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching with grant VCs, and Claude AI chat. Frontend is a thin API client. |
 | `apps/discovery-server` | Express REST API for WebID registration and search. Fetches and caches public indices. |
 
@@ -57,7 +57,7 @@ The Data Requester's Express server uses client credentials for server-side OIDC
 5. Click **Register** — you'll receive a **Client ID** and **Client Secret**
 6. Copy these into your `.env` file as `SOLID_CLIENT_ID` and `SOLID_CLIENT_SECRET`
 
-These credentials are also needed if you run any of the utility scripts (e.g. `scripts/upload-client-id.ts`).
+These credentials are also needed if you run any of the utility scripts (e.g. `scripts/upload-client-id.ts`, `scripts/seed-education-data.ts`).
 
 ## Getting Started
 
@@ -96,7 +96,7 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 |----------|-----------|
 | **Bearer tokens only** | DPoP breaks access grants on ESS. `tokenType: "Bearer"` everywhere. |
 | **Pod URL via `getPodUrlAll()`** | Never derived from WebID — they use different domains on Pod Spaces. |
-| **Concurrency-limited spider** | Max 5 parallel fetches, 403s skipped gracefully. |
+| **Concurrency-limited spider** | Max 20 parallel fetches (HTTP/2 multiplexing), 403s skipped gracefully. |
 | **Public index as Turtle** | `public-index.ttl` at pod root enables PATCH updates without full rewrites. |
 | **Access grants v4 API** | Uses `query()`/`paginatedQuery()` with getter helpers. |
 | **`inherit: true` for containers** | Automatically set when requesting access to containers so the grant cascades to contents. |
@@ -120,7 +120,7 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 │   ├── index-writer.ts       # Write/PATCH public-index.ttl with ETag handling
 │   ├── access-grants.ts      # Query/approve/deny/revoke access grants (v4)
 │   ├── uploader.ts           # File upload + move
-│   └── ui/                   # 7 UI modules (auth, status, tree, data-viewer, upload, access, grants)
+│   └── ui/                   # 7 UI modules (auth, status, tree, data-viewer + delete, upload, access, grants)
 ├── apps/data-requester/
 │   ├── server/
 │   │   ├── auth.ts           # Server-side OIDC session management
@@ -138,6 +138,15 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
     ├── store.ts              # In-memory store with JSON file persistence
     └── index-fetcher.ts      # Fetches/parses public-index.ttl from pods
 ```
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/upload-client-id.ts` | Uploads a Solid OIDC client ID document (JSON-LD) to a pod and makes it publicly readable. |
+| `scripts/seed-education-data.ts` | Seeds a pod with example student education data (profile, schedule, test scores, learning plans, teacher notes, attendance, extracurriculars, report cards, disciplinary record, health/wellness). |
+
+Run with: `npx tsx --env-file=.env scripts/<script>.ts`
 
 ## Dependencies
 

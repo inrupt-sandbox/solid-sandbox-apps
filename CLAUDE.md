@@ -31,14 +31,14 @@ No test runner or linter is configured.
 
 ### Workspaces
 - **`packages/shared`** — Types (`PodResource`, `PodIndex`, `DirectoryEntry`), RDF vocabulary constants, `VC_QUERY_ENDPOINT`, Turtle index builder/parser, discovery API client, shared utilities (`escapeHtml`, `formatModes`). Imported as `@solid-ecosystem/shared`. Exports raw `.ts` source (no build step).
-- **`apps/pod-manager`** — Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser` OIDC, spiders user's pod, builds/publishes a public Turtle index, registers with discovery server, manages incoming access requests and active grants.
+- **`apps/pod-manager`** — Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser` OIDC, spiders user's pod, builds/publishes a public Turtle index, registers with discovery server, manages incoming access requests and active grants. Supports file upload, move, and delete (including recursive container deletion).
 - **`apps/data-requester`** — Express server (`:5174`) + Vite frontend (`:5175`). Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching via grant VCs, Claude AI chat. Frontend is a thin API client that proxies through the server.
 - **`apps/discovery-server`** — Express server. REST API for WebID registration and search. In-memory store with JSON file persistence. Runs via `tsx watch`.
 
 ### Key Patterns
 - **Bearer tokens only** — `tokenType: "Bearer"` in all auth calls; DPoP breaks access grants on ESS.
 - **Pod URL via `getPodUrlAll()`** — never derived from WebID.
-- **Concurrency-limited pod spider** — max 5 parallel fetches, 403s skipped.
+- **Concurrency-limited pod spider** — max 20 parallel fetches (HTTP/2), 403s skipped.
 - **Public index as Turtle** — `public-index.ttl` written to pod root, enables PATCH updates.
 - **Access grants v4 API** — uses `query()`/`paginatedQuery()` with getter helpers from `@inrupt/solid-client-access-grants`.
 - **`inherit: true` for containers** — automatically set when requesting access to container URLs so the grant cascades to contents.
