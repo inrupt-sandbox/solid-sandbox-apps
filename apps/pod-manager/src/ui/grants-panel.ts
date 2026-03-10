@@ -20,12 +20,22 @@ export function renderGrantsPanel(
       ? new Date(grant.expiresAt).toLocaleDateString()
       : "No expiration";
 
+    const issued = grant.issuedAt
+      ? new Date(grant.issuedAt).toLocaleString()
+      : null;
+
     card.innerHTML = `
       <div class="access-info">
-        <strong>Granted to: ${escapeHtml(grant.granteeWebId)}</strong>
-        <p>Modes: ${grant.modes.join(", ")} &middot; Expires: ${expiry}</p>
-        <ul>
-          ${grant.resourceUrls.map((u) => `<li>${escapeHtml(u)}</li>`).join("")}
+        <div class="request-header">
+          <strong>Granted to: ${escapeHtml(grant.granteeWebId)}</strong>
+          ${issued ? `<span class="request-date">issued ${issued}</span>` : ""}
+        </div>
+        <p>
+          ${grant.modes.map((m) => `<span class="badge badge-mode">${m}</span>`).join(" ")}
+          &middot; Expires: ${expiry}
+        </p>
+        <ul class="resource-list">
+          ${grant.resourceUrls.map((u) => `<li title="${escapeHtml(u)}">${escapeHtml(shortenUrl(u))}</li>`).join("")}
         </ul>
       </div>
       <div class="access-actions">
@@ -38,6 +48,15 @@ export function renderGrantsPanel(
       .addEventListener("click", () => onRevoke(grant.id));
 
     container.appendChild(card);
+  }
+}
+
+function shortenUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    return u.pathname;
+  } catch {
+    return url;
   }
 }
 

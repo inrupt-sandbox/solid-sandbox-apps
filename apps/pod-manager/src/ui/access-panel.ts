@@ -16,12 +16,32 @@ export function renderAccessPanel(
   for (const req of requests) {
     const card = document.createElement("div");
     card.className = "access-card";
+
+    const requestDate = req.requestedAt
+      ? new Date(req.requestedAt).toLocaleString()
+      : null;
+
+    const purposeHtml = req.purposes.length > 0
+      ? `<p class="request-purpose">${escapeHtml(req.purposes.join(", "))}</p>`
+      : "";
+
+    const inheritNote = req.inherit
+      ? ` <span class="badge badge-info" title="Access will cascade to all resources within requested containers">+ children</span>`
+      : "";
+
     card.innerHTML = `
       <div class="access-info">
-        <strong>${escapeHtml(req.requestorWebId)}</strong>
-        <p>Requesting: ${req.modes.join(", ")} access to:</p>
-        <ul>
-          ${req.resourceUrls.map((u) => `<li>${escapeHtml(u)}</li>`).join("")}
+        <div class="request-header">
+          <strong>${escapeHtml(req.requestorWebId)}</strong>
+          ${requestDate ? `<span class="request-date">${requestDate}</span>` : ""}
+        </div>
+        ${purposeHtml}
+        <p>
+          ${req.modes.map((m) => `<span class="badge badge-mode">${m}</span>`).join(" ")}
+          ${inheritNote}
+        </p>
+        <ul class="resource-list">
+          ${req.resourceUrls.map((u) => `<li title="${escapeHtml(u)}">${escapeHtml(shortenUrl(u))}</li>`).join("")}
         </ul>
       </div>
       <div class="access-actions">
@@ -38,6 +58,16 @@ export function renderAccessPanel(
       .addEventListener("click", () => onDeny(req.id));
 
     container.appendChild(card);
+  }
+}
+
+/** Show just the path portion of a pod URL for readability */
+function shortenUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    return u.pathname;
+  } catch {
+    return url;
   }
 }
 

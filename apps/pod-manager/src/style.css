@@ -406,7 +406,7 @@ li.collapsed > ul {
   margin-bottom: 0.5rem;
 }
 
-.access-info ul {
+.access-info ul:not(.resource-list) {
   padding-left: 1.25rem;
   font-family: monospace;
   font-size: 0.8rem;
@@ -415,6 +415,54 @@ li.collapsed > ul {
 .access-actions {
   display: flex;
   gap: 0.5rem;
+}
+
+.request-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.request-date {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+
+.request-purpose {
+  margin: 0.35rem 0;
+  color: #4a5568;
+  font-style: italic;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-mode {
+  background: #ebf8ff;
+  color: #2b6cb0;
+}
+
+.badge-info {
+  background: #fefcbf;
+  color: #975a16;
+}
+
+.resource-list {
+  padding-left: 1.25rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+.resource-list li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .registry-status {
