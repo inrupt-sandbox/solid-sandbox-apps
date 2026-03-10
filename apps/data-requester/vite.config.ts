@@ -3,6 +3,6 @@ import { defineConfig } from "vite";
 export default defineConfig({
   envDir: "../../",
   server: {
-    port: 5174,
+    port: 5175,
   },
 });

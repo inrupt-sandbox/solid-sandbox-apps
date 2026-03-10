@@ -1,19 +1,3 @@
-import {
-  query,
-  getFile,
-  getId,
-  getRequestor,
-  getResourceOwner,
-  getResources,
-  getAccessModes,
-  getExpirationDate,
-  getIssuanceDate,
-  type CredentialResult,
-} from "@inrupt/solid-client-access-grants";
-import type { DatasetWithId } from "@inrupt/solid-client-vc";
-
-const QUERY_ENDPOINT = new URL("https://vc.inrupt.com/query");
-
 export interface GrantInfo {
   id: string;
   ownerWebId: string;
@@ -21,35 +5,6 @@ export interface GrantInfo {
   modes: string[];
   expiresAt: string | null;
   issuedAt: string | null;
-  vc: DatasetWithId;
-}
-
-export async function fetchReceivedGrants(
-  authFetch: typeof fetch
-): Promise<GrantInfo[]> {
-  try {
-    const result: CredentialResult = await query(
-      { type: "SolidAccessGrant", status: "Active" },
-      { fetch: authFetch, queryEndpoint: QUERY_ENDPOINT }
-    );
-
-    return result.items.map((vc) => {
-      const expDate = getExpirationDate(vc);
-      const issDate = getIssuanceDate(vc);
-      return {
-        id: getId(vc),
-        ownerWebId: getResourceOwner(vc) ?? "Unknown",
-        resourceUrls: getResources(vc).map(String),
-        modes: formatModes(getAccessModes(vc)),
-        expiresAt: expDate ? expDate.toISOString() : null,
-        issuedAt: issDate ? issDate.toISOString() : null,
-        vc,
-      };
-    });
-  } catch (err) {
-    console.error("Failed to fetch received grants:", err);
-    return [];
-  }
 }
 
 export interface ResourceContent {
@@ -58,33 +13,50 @@ export interface ResourceContent {
   blobUrl: string | null;
 }
 
-const TEXT_TYPES = ["text/", "application/json", "application/ld+json", "text/turtle"];
+export const TEXT_TYPES = ["text/", "application/json", "application/ld+json", "text/turtle"];
 
-function isTextContent(contentType: string): boolean {
+export function isTextContentType(contentType: string): boolean {
   return TEXT_TYPES.some((t) => contentType.startsWith(t));
+}
+
+export async function fetchReceivedGrants(): Promise<GrantInfo[]> {
+  try {
+    const res = await fetch("/api/grants");
+    if (!res.ok) throw new Error(`Failed: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error("Failed to fetch received grants:", err);
+    return [];
+  }
 }
 
 export async function fetchGrantedResource(
   resourceUrl: string,
-  grantVc: DatasetWithId,
-  authFetch: typeof fetch
+  grantId: string
 ): Promise<ResourceContent> {
-  const blob = await getFile(resourceUrl, grantVc, { fetch: authFetch });
-  const contentType = blob.type || "application/octet-stream";
+  const res = await fetch("/api/fetch-resource", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ resourceUrl, grantId }),
+  });
 
-  if (isTextContent(contentType)) {
-    const text = await blob.text();
-    return { contentType, text, blobUrl: null };
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error || "Failed to fetch resource");
   }
 
+  const contentType = res.headers.get("content-type") || "application/octet-stream";
+
+  // If the response is JSON with our text wrapper
+  if (contentType.includes("application/json")) {
+    const data = await res.json();
+    if (data.contentType !== undefined) {
+      return data as ResourceContent;
+    }
+  }
+
+  // Binary response
+  const blob = await res.blob();
   const blobUrl = URL.createObjectURL(blob);
   return { contentType, text: null, blobUrl };
-}
-
-function formatModes(modes: { read?: boolean; write?: boolean; append?: boolean }): string[] {
-  const result: string[] = [];
-  if (modes.read) result.push("Read");
-  if (modes.write) result.push("Write");
-  if (modes.append) result.push("Append");
-  return result;
 }
