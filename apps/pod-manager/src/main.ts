@@ -20,7 +20,7 @@ import {
 import { renderAccessPanel } from "./ui/access-panel.js";
 import { renderGrantsPanel } from "./ui/grants-panel.js";
 import { initUploadPanel, setUploadTarget } from "./ui/upload-panel.js";
-import { loadResource } from "./ui/data-viewer.js";
+import { loadResource, loadContainerView } from "./ui/data-viewer.js";
 import { DiscoveryClient } from "@solid-ecosystem/shared";
 import type { DirectoryEntry, PodResource } from "@solid-ecosystem/shared";
 
@@ -87,6 +87,17 @@ async function main(): Promise<void> {
     },
     onSelectContainer(url: string) {
       setUploadTarget(url);
+      const childCount = currentResources.filter(
+        (r) => r.url !== url && r.url.startsWith(url)
+      ).length;
+      loadContainerView({
+        url,
+        authFetch,
+        titleEl: viewerTitle,
+        contentEl: viewerContent,
+        childCount,
+        onDeleted: () => refreshPod(),
+      });
     },
   };
 

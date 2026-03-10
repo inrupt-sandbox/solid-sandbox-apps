@@ -242,6 +242,118 @@ function buildToolbar(
   return toolbar;
 }
 
+export interface ContainerViewerOptions {
+  url: string;
+  authFetch: typeof fetch;
+  titleEl: HTMLElement;
+  contentEl: HTMLElement;
+  childCount: number;
+  onDeleted: () => void;
+}
+
+export function loadContainerView(opts: ContainerViewerOptions): void {
+  const { url, authFetch, titleEl, contentEl, childCount, onDeleted } = opts;
+  const name = decodeURIComponent(url.split("/").filter(Boolean).pop() ?? url) + "/";
+  titleEl.textContent = name;
+
+  contentEl.innerHTML = "";
+
+  const meta = document.createElement("div");
+  meta.className = "viewer-meta";
+  meta.innerHTML = `
+    <span>Container</span>
+    <span>${childCount} item${childCount !== 1 ? "s" : ""}</span>
+    <a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="viewer-link">Open raw</a>
+  `;
+  contentEl.appendChild(meta);
+
+  const actions = document.createElement("div");
+  actions.className = "viewer-actions";
+  actions.style.marginTop = "0.5rem";
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "btn btn-danger btn-sm";
+  deleteBtn.textContent = "Delete container";
+  actions.appendChild(deleteBtn);
+
+  const deleteConfirmPanel = document.createElement("div");
+  deleteConfirmPanel.className = "delete-confirm-panel hidden";
+
+  if (childCount > 0) {
+    deleteConfirmPanel.innerHTML = `<span>Delete all ${childCount} item${childCount !== 1 ? "s" : ""} and this container?</span>`;
+  } else {
+    deleteConfirmPanel.innerHTML = `<span>Are you sure?</span>`;
+  }
+
+  const deleteYes = document.createElement("button");
+  deleteYes.className = "btn btn-danger btn-sm";
+  deleteYes.textContent = "Yes, delete";
+  deleteConfirmPanel.appendChild(deleteYes);
+
+  const deleteNo = document.createElement("button");
+  deleteNo.className = "btn btn-secondary btn-sm";
+  deleteNo.textContent = "Cancel";
+  deleteConfirmPanel.appendChild(deleteNo);
+
+  actions.appendChild(deleteConfirmPanel);
+  contentEl.appendChild(actions);
+
+  deleteBtn.addEventListener("click", () => {
+    deleteConfirmPanel.classList.toggle("hidden");
+  });
+
+  deleteNo.addEventListener("click", () => {
+    deleteConfirmPanel.classList.add("hidden");
+  });
+
+  deleteYes.addEventListener("click", async () => {
+    deleteYes.disabled = true;
+    deleteYes.textContent = "Deleting...";
+    try {
+      await deleteContainerRecursive(url, authFetch);
+      contentEl.innerHTML = `<p class="viewer-success">Deleted ${escapeHtml(name)}</p>`;
+      onDeleted();
+    } catch (err: any) {
+      deleteYes.textContent = "Failed";
+      console.error("Delete container failed:", err);
+    }
+  });
+}
+
+async function deleteContainerRecursive(
+  containerUrl: string,
+  authFetch: typeof fetch
+): Promise<void> {
+  // List contents by fetching the container as Turtle and parsing ldp:contains
+  const res = await authFetch(containerUrl, {
+    headers: { Accept: "text/turtle" },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to read container: ${res.status} ${res.statusText}`);
+  }
+
+  const turtle = await res.text();
+  // Extract ldp:contains URLs from the Turtle response
+  const containsRegex = /<http:\/\/www\.w3\.org\/ns\/ldp#contains>\s+<([^>]+)>/g;
+  const children: string[] = [];
+  let match;
+  while ((match = containsRegex.exec(turtle)) !== null) {
+    children.push(match[1]);
+  }
+
+  // Delete children — recurse into sub-containers first
+  for (const child of children) {
+    if (child.endsWith("/")) {
+      await deleteContainerRecursive(child, authFetch);
+    } else {
+      await deleteFile(child, { fetch: authFetch });
+    }
+  }
+
+  // Now delete the empty container
+  await deleteFile(containerUrl, { fetch: authFetch });
+}
+
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
