@@ -51,7 +51,7 @@ The Data Requester's Express server uses client credentials for server-side OIDC
 1. Go to [login.inrupt.com](https://login.inrupt.com)
 2. Log in with your Pod Spaces account
 3. Navigate to **Application Registration** (or visit `https://login.inrupt.com/registration.html` directly)
-4. Fill in your app name and redirect URL (e.g. `http://localhost:5174/auth/callback`)
+4. Fill in your app name
 5. Click **Register** — you'll receive a **Client ID** and **Client Secret**
 6. Copy these into your `.env` file as `SOLID_CLIENT_ID` and `SOLID_CLIENT_SECRET`
 
