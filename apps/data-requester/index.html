@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Requester</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Data Requester</h1>
+      <div id="auth-section"></div>
+    </header>
+    <main>
+      <div id="content" class="hidden">
+        <section id="search-panel">
+          <h2>Find Users</h2>
+          <div id="search-form"></div>
+          <div id="search-results"></div>
+        </section>
+        <section id="resource-panel" class="hidden">
+          <h2>Resources</h2>
+          <div id="resource-browser"></div>
+        </section>
+        <section id="request-panel" class="hidden">
+          <h2>Request Access</h2>
+          <div id="request-form"></div>
+        </section>
+        <section id="grants-panel" class="hidden">
+          <h2>My Granted Access</h2>
+          <div id="grants-list"></div>
+          <div id="resource-viewer" class="hidden"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

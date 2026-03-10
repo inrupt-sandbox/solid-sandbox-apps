@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(rm -rf .git)",
+      "Bash(git init:*)",
+      "Bash(git remote:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/maxleonard/workspace/test-solid-app"
+    ]
+  }
+}

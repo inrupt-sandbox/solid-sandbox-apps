@@ -1,0 +1,20 @@
+{
+  "@context": "https://www.w3.org/ns/solid/oidc-context.jsonld",
+  "client_id": "<POD_URL>solid-dev-client-id.jsonld",
+  "client_name": "Solid Local Development",
+  "redirect_uris": [
+    "http://localhost:3000/",
+    "http://localhost:3001/",
+    "http://localhost:4000/",
+    "http://localhost:4173/",
+    "http://localhost:4174/",
+    "http://localhost:5173/",
+    "http://localhost:5174/",
+    "http://localhost:5175/",
+    "http://localhost:8080/",
+    "http://localhost:8081/"
+  ],
+  "grant_types": ["authorization_code", "refresh_token"],
+  "scope": "openid webid offline_access",
+  "token_endpoint_auth_method": "none"
+}

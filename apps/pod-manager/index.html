@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pod Manager</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Pod Manager</h1>
+      <div id="auth-section"></div>
+    </header>
+    <main>
+      <div id="status-bar" class="hidden"></div>
+      <div id="content" class="hidden">
+        <div class="panels">
+          <section id="pod-tree-panel">
+            <h2>Pod Contents</h2>
+            <div id="pod-tree"></div>
+            <div id="pod-actions"></div>
+          </section>
+          <section id="access-panel">
+            <h2>Access Requests</h2>
+            <div id="access-requests"></div>
+          </section>
+          <section id="active-grants-panel">
+            <h2>Active Grants</h2>
+            <div id="active-grants"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
