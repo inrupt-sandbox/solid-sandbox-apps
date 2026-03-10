@@ -6,52 +6,40 @@ Built as a **reference implementation** demonstrating authentication, pod traver
 
 ## Architecture
 
-```
-                        ┌───────────────────────────────────────────┐
-                        │        Inrupt Pod Spaces (ESS)            │
-                        │         login.inrupt.com                  │
-                        │                                           │
-                        │  ┌─────────────┐    ┌──────────────────┐  │
-                        │  │  WebID      │    │  Solid Pod       │  │
-                        │  │  Profile    │    │  (storage.       │  │
-                        │  │  (id.       │    │   inrupt.com)    │  │
-                        │  │   inrupt.   │    │                  │  │
-                        │  │   com)      │    │  • Resources     │  │
-                        │  │             │    │  • Containers    │  │
-                        │  └─────────────┘    │  • public-       │  │
-                        │                     │    index.ttl     │  │
-                        │  ┌──────────────┐   │  • Access rules  │  │
-                        │  │ VC Service   │   └──────────────────┘  │
-                        │  │ (vc.inrupt.  │                         │
-                        │  │  com)        │                         │
-                        │  │ • Grants     │                         │
-                        │  │ • Requests   │                         │
-                        │  └──────────────┘                         │
-                        └──────────▲────────────────────────────────┘
-                                   │  OIDC + Solid Protocol
-                     ┌─────────────┴──────────────┐
-                     │                             │
-                     │                             │
-┌─────────────────────────┐    ┌─────────────────────────────────────────┐
-│   Pod Manager           │    │   Data Requester                        │
-│   (Vite :5173)          │    │   Express :5174 → Vite :5175            │
-│                         │    │                                         │
-│  Browser-only SPA       │    │  Server-side auth + frontend SPA        │
-│  • OIDC login (browser) │    │  • OIDC via solid-client-authn-node     │
-│  • Spider pod contents  │    │  • Access grant queries via VC service  │
-│  • Publish public index │    │  • Fetch resources using grant VCs      │
-│  • Approve/deny grants  │    │  • Claude AI chatbot (server-side key)  │
-└────────┬────────────────┘    └────────┬────────────────────────────────┘
-         │                              │
-         │  POST /register              │  GET /search, /directory
-         │  POST /refresh-index         │  GET /lookup
-         ▼                              ▼
-┌─────────────────────────────────────────────────┐
-│   Discovery Server (Express :3001)              │
-│   • WebID registration + public index caching   │
-│   • Substring search across users & resources   │
-│   • In-memory store with JSON file persistence  │
-└─────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph ESS["Inrupt Pod Spaces (ESS)"]
+        WebID["WebID Profile<br/><i>id.inrupt.com</i>"]
+        Pod["Solid Pod<br/><i>storage.inrupt.com</i><br/>Resources · Containers<br/>public-index.ttl · Access rules"]
+        VC["VC Service<br/><i>vc.inrupt.com</i><br/>Access Grants · Requests"]
+    end
+
+    subgraph Claude["Claude API"]
+        AI["Anthropic Messages API<br/><i>claude-haiku-4-5</i>"]
+    end
+
+    subgraph PM["Pod Manager · :5173"]
+        PM_desc["Browser-only SPA<br/>OIDC login · Spider pod contents<br/>Publish public index · Approve/deny grants"]
+    end
+
+    subgraph DR["Data Requester · :5174 → :5175"]
+        DR_desc["Server-side auth + frontend SPA<br/>Access grant queries · Fetch granted resources<br/>AI chatbot for data exploration"]
+    end
+
+    subgraph DS["Discovery Server · :3001"]
+        DS_desc["WebID registration · Public index caching<br/>Search across users & resources<br/>In-memory store + JSON persistence"]
+    end
+
+    PM_desc -- "OIDC + Solid Protocol" --> WebID
+    PM_desc -- "Read/write resources" --> Pod
+    PM_desc -- "Manage grants" --> VC
+    PM_desc -- "POST /register<br/>POST /refresh-index" --> DS_desc
+
+    DR_desc -- "OIDC + Solid Protocol" --> WebID
+    DR_desc -- "Fetch via grant VCs" --> Pod
+    DR_desc -- "Query grants/requests" --> VC
+    DR_desc -- "GET /search, /directory<br/>GET /lookup" --> DS_desc
+    DR_desc -- "Chat completions" --> AI
 ```
 
 ### Workspaces
