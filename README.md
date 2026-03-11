@@ -16,7 +16,7 @@ graph TB
     end
 
     subgraph DR["My AI Tutor · :5174 → :5175"]
-        DR_desc["Server-side auth + frontend SPA<br/>Access grant queries · Fetch granted resources<br/>AI chatbot for data exploration"]
+        DR_desc["Server-side auth + frontend SPA<br/>Access grant queries · Fetch granted resources<br/>AI chatbot with proactive memory (→ memory.ttl)"]
     end
 
     subgraph DS["Discovery Server · :3001"]
@@ -36,8 +36,8 @@ graph TB
 | Workspace | Description |
 |-----------|-------------|
 | `packages/shared` | Types, RDF vocabulary, Turtle index builder/parser, discovery API client, shared utilities. Imported as `@solid-ecosystem/shared`. Exports raw `.ts` (no build step). |
-| `apps/pod-manager` | Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser`, spiders the user's pod, builds/publishes a `public-index.ttl`, registers with discovery, manages access requests and grants. Supports file upload, move, and delete (including recursive container deletion). |
-| `apps/data-requester` | **My AI Tutor.** Express server + Vite frontend. Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching with grant VCs, and Claude AI chat. Frontend is a thin API client. |
+| `apps/pod-manager` | **My Wallet.** Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser`, spiders the user's pod (with manual refresh), builds/publishes a `public-index.ttl`, registers with discovery, manages access requests and grants. Supports file upload, move, and delete (including recursive container deletion). |
+| `apps/data-requester` | **My AI Tutor.** Express server + Vite frontend. Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching with grant VCs, and Claude AI chat with proactive memory. Frontend is a thin API client. |
 | `apps/discovery-server` | Express REST API for WebID registration and search. Fetches and caches public indices. |
 
 ## Prerequisites
@@ -89,6 +89,10 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 7. User A sees the request in My Wallet → approves or denies
 8. User B's grants panel shows the approved grant → can browse granted resources
 9. User B loads granted resources into the AI chatbot for intelligent exploration
+10. User B requests **write access** for tutor memory (in Request Access → Tutor Memory)
+11. User A approves the write request in My Wallet
+12. The AI chatbot now proactively saves study notes to `memory.ttl` on User A's pod as RDF triples
+13. User A clicks **Refresh** in My Wallet to see the new `memory.ttl` in their pod
 
 ## Key Technical Decisions
 
@@ -101,6 +105,8 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 | **Access grants v4 API** | Uses `query()`/`paginatedQuery()` with getter helpers. |
 | **`inherit: true` for containers** | Automatically set when requesting access to containers so the grant cascades to contents. |
 | **Server-side auth for My AI Tutor** | Keeps API keys and refresh tokens off the client. Express on :5174 proxies to Vite on :5175. |
+| **Proactive AI memory via tool calling** | Claude uses a `save_memory` tool to append `schema:LearningResource` triples to `memory.ttl` at the pod root. Tool is only offered when a Write grant exists. |
+| **Agentic tool loop** | `/api/chat` runs up to 5 iterations, executing tool calls and feeding results back to Claude until it produces a final text response. |
 | **Shared `escapeHtml` utility** | Single consistent implementation in `packages/shared` used across all HTML rendering. |
 | **`VC_QUERY_ENDPOINT` in shared** | Inrupt VC query URL defined once in `packages/shared/src/vocab.ts`. |
 
@@ -124,7 +130,7 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 ├── apps/data-requester/
 │   ├── server/
 │   │   ├── auth.ts           # Server-side OIDC session management
-│   │   └── routes.ts         # /api/grants, /api/fetch-resource, /api/chat, /api/request-access
+│   │   └── routes.ts         # /api/grants, /api/fetch-resource, /api/chat (agentic loop + save_memory tool), /api/request-access, /api/pod-root
 │   └── src/
 │       ├── auth.ts           # Frontend auth (calls /auth/status)
 │       ├── access-requester.ts   # Calls /api/request-access
