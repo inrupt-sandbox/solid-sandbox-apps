@@ -263,7 +263,7 @@ apiRouter.post("/chat", async (req, res) => {
 
     if (hasWriteAccess) {
       systemPrompt +=
-        "\nYou have the ability to save memorable insights to the user's memory.ttl file on their pod using the save_memory tool. Use it proactively when the conversation produces something worth remembering — key concepts, summaries, study notes, or important conclusions. You don't need to ask permission; just save when it's useful.\n";
+        "\nYou have the ability to save memorable insights to the user's memory.ttl file on their pod using the save_memory tool. Use it proactively when the conversation produces something worth remembering — key concepts, summaries, study notes, or important conclusions. You don't need to ask permission; just save when it's useful. IMPORTANT: Always also provide a full text response to the user — saving a memory should happen alongside your answer, not instead of it.\n";
     }
 
     if (resourceContext && Array.isArray(resourceContext) && resourceContext.length > 0) {
