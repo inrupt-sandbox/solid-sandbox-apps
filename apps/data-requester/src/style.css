@@ -5,9 +5,9 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f0faf4;
-  color: #1a2e1a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f5f3ff;
+  color: #1e1b4b;
   line-height: 1.6;
 }
 
@@ -22,19 +22,20 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 2px solid #c6f6d5;
+  border-bottom: 2px solid #ddd6fe;
   margin-bottom: 1rem;
 }
 
 header h1 {
   font-size: 1.5rem;
-  color: #22543d;
+  color: #4c1d95;
+  letter-spacing: -0.02em;
 }
 
 .tabs {
   display: flex;
   gap: 0;
-  border-bottom: 2px solid #c6f6d5;
+  border-bottom: 2px solid #ddd6fe;
   margin-bottom: 1.5rem;
 }
 
@@ -45,19 +46,19 @@ header h1 {
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #68856e;
+  color: #8b8fa3;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: color 0.2s, border-color 0.2s;
 }
 
 .tab:hover {
-  color: #22543d;
+  color: #4c1d95;
 }
 
 .tab.active {
-  color: #38a169;
-  border-bottom-color: #38a169;
+  color: #7c3aed;
+  border-bottom-color: #7c3aed;
 }
 
 .tab-content {
@@ -71,54 +72,57 @@ header h1 {
 .user-info {
   margin-right: 1rem;
   font-size: 0.85rem;
-  color: #4a6e52;
+  color: #6d6b7a;
 }
 
 .btn {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .btn-primary {
-  background: #38a169;
+  background: #7c3aed;
   color: white;
+  box-shadow: 0 1px 2px rgba(124, 58, 237, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2f855a;
+  background: #6d28d9;
+  box-shadow: 0 2px 4px rgba(124, 58, 237, 0.4);
 }
 
 .btn-secondary {
-  background: #c6f6d5;
-  color: #22543d;
+  background: #ede9fe;
+  color: #4c1d95;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #9ae6b4;
+  background: #ddd6fe;
 }
 
 .input {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ddd6fe;
+  border-radius: 8px;
   font-size: 0.9rem;
   flex: 1;
+  background: white;
 }
 
 .input:focus {
   outline: none;
-  border-color: #38a169;
-  box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.2);
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
 }
 
 .hidden {
@@ -126,32 +130,32 @@ header h1 {
 }
 
 .muted {
-  color: #8faa96;
+  color: #9ca0b0;
   font-style: italic;
 }
 
 .error {
-  color: #c53030;
+  color: #dc2626;
 }
 
 .success {
-  color: #276749;
+  color: #059669;
 }
 
 section {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e6f4ea;
+  box-shadow: 0 1px 3px rgba(30, 27, 75, 0.06), 0 1px 2px rgba(30, 27, 75, 0.04);
+  border: 1px solid #ede9fe;
 }
 
 section h2 {
   font-size: 1.1rem;
   margin-bottom: 1rem;
-  color: #22543d;
-  border-bottom: 1px solid #c6f6d5;
+  color: #4c1d95;
+  border-bottom: 1px solid #ede9fe;
   padding-bottom: 0.5rem;
 }
 
@@ -163,16 +167,17 @@ section h2 {
 
 /* User cards */
 .user-card {
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ede9fe;
+  border-radius: 8px;
   padding: 0.75rem;
   margin-bottom: 0.5rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .user-card:hover {
-  background: #f0fff4;
+  background: #f5f3ff;
+  border-color: #c4b5fd;
 }
 
 .user-info-card {
@@ -183,8 +188,8 @@ section h2 {
 
 .badge {
   display: inline-block;
-  background: #f0fff4;
-  color: #276749;
+  background: #ede9fe;
+  color: #5b21b6;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -199,8 +204,8 @@ section h2 {
 .resource-list {
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ede9fe;
+  border-radius: 8px;
   padding: 0.5rem;
 }
 
@@ -210,19 +215,20 @@ section h2 {
   gap: 0.5rem;
   padding: 4px 8px;
   font-size: 0.85rem;
-  font-family: monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .resource-item:hover {
-  background: #f0fff4;
+  background: #f5f3ff;
 }
 
 .resource-tree {
   max-height: 500px;
   overflow-y: auto;
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ede9fe;
+  border-radius: 8px;
   padding: 0.5rem;
 }
 
@@ -238,13 +244,13 @@ section h2 {
   gap: 0.5rem;
   padding: 3px 6px;
   font-size: 0.85rem;
-  font-family: monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   cursor: pointer;
   border-radius: 4px;
 }
 
 .resource-tree-row:hover {
-  background: #f0fff4;
+  background: #f5f3ff;
 }
 
 .resource-tree-row input:disabled + span {
@@ -264,7 +270,7 @@ section h2 {
 
 .resource-url-list {
   padding-left: 1.25rem;
-  font-family: monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-size: 0.8rem;
   max-height: 150px;
   overflow-y: auto;
@@ -285,8 +291,8 @@ section h2 {
 
 /* Grants */
 .grant-card {
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ede9fe;
+  border-radius: 8px;
   padding: 0.75rem;
   margin-bottom: 0.5rem;
 }
@@ -301,21 +307,21 @@ section h2 {
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
-  color: #4a6e52;
+  color: #6d6b7a;
   margin-bottom: 0.5rem;
 }
 
 .mode-badge {
   display: inline-block;
-  background: #f0fff4;
-  color: #276749;
+  background: #ede9fe;
+  color: #5b21b6;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
 }
 
 .grant-expiry {
-  color: #8faa96;
+  color: #9ca0b0;
   font-size: 0.8rem;
 }
 
@@ -331,20 +337,20 @@ section h2 {
   align-items: center;
   padding: 4px 0;
   font-size: 0.85rem;
-  font-family: monospace;
-  border-bottom: 1px solid #f0fff4;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  border-bottom: 1px solid #f5f3ff;
 }
 
 .container-contents {
   list-style: none;
   padding-left: 1.5rem;
   width: 100%;
-  border-left: 2px solid #c6f6d5;
+  border-left: 2px solid #ddd6fe;
   margin: 4px 0;
 }
 
 .container-contents li {
-  border-bottom: 1px solid #e6f4ea;
+  border-bottom: 1px solid #ede9fe;
 }
 
 .btn-small {
@@ -371,9 +377,9 @@ section h2 {
 }
 
 .resource-viewer-content {
-  background: #f0faf4;
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  background: #faf5ff;
+  border: 1px solid #ede9fe;
+  border-radius: 8px;
   padding: 1rem;
   max-height: 400px;
   overflow: auto;
@@ -386,20 +392,20 @@ section h2 {
 .chat-resource-picker {
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #c6f6d5;
+  border-bottom: 1px solid #ede9fe;
 }
 
 .chat-picker-label {
   font-size: 0.85rem;
-  color: #4a6e52;
+  color: #6d6b7a;
   margin-bottom: 0.5rem;
 }
 
 .chat-resource-list {
   max-height: 160px;
   overflow-y: auto;
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ede9fe;
+  border-radius: 8px;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -415,11 +421,11 @@ section h2 {
 }
 
 .chat-resource-item:hover {
-  background: #f0fff4;
+  background: #f5f3ff;
 }
 
 .chat-resource-label {
-  font-family: monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -438,19 +444,20 @@ section h2 {
 .chat-messages {
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid #c6f6d5;
-  border-radius: 6px;
+  border: 1px solid #ede9fe;
+  border-radius: 12px;
   padding: 0.75rem;
   margin-bottom: 0.75rem;
   min-height: 100px;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  background: #faf5ff;
 }
 
 .chat-message {
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.9rem;
   line-height: 1.5;
   max-width: 85%;
@@ -461,16 +468,17 @@ section h2 {
 .chat-message-assistant p:first-child { margin-top: 0; }
 .chat-message-assistant p:last-child { margin-bottom: 0; }
 .chat-message-assistant code {
-  background: #c6f6d5;
+  background: #ede9fe;
   padding: 1px 4px;
   border-radius: 3px;
   font-size: 0.85em;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 .chat-message-assistant pre {
-  background: #1a2e1a;
-  color: #c6f6d5;
+  background: #1e1b4b;
+  color: #e9d5ff;
   padding: 0.5rem;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow-x: auto;
   margin: 0.25rem 0;
 }
@@ -490,16 +498,19 @@ section h2 {
 }
 
 .chat-message-user {
-  background: #c6f6d5;
-  color: #22543d;
+  background: #7c3aed;
+  color: white;
   align-self: flex-end;
   white-space: pre-wrap;
+  border-radius: 10px 10px 2px 10px;
 }
 
 .chat-message-assistant {
-  background: #f0faf4;
-  color: #1a2e1a;
+  background: white;
+  color: #1e1b4b;
   align-self: flex-start;
+  border: 1px solid #ede9fe;
+  border-radius: 10px 10px 10px 2px;
 }
 
 .chat-input-row {
@@ -514,7 +525,7 @@ section h2 {
 .chat-memory-status {
   font-size: 0.85rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 8px;
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
@@ -524,9 +535,9 @@ section h2 {
 }
 
 .chat-memory-active {
-  background: #f0fff4;
-  color: #276749;
-  border: 1px solid #c6f6d5;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 .chat-memory-inactive {
@@ -537,17 +548,17 @@ section h2 {
 
 .chat-tool-use {
   font-size: 0.8rem;
-  color: #276749;
-  background: #f0fff4;
-  border: 1px solid #c6f6d5;
-  border-radius: 4px;
+  color: #5b21b6;
+  background: #ede9fe;
+  border: 1px solid #ddd6fe;
+  border-radius: 6px;
   padding: 0.3rem 0.6rem;
   align-self: flex-start;
   font-style: italic;
 }
 
 .chat-loading {
-  color: #8faa96;
+  color: #9ca0b0;
   font-style: italic;
   font-size: 0.85rem;
   padding: 0.5rem;
@@ -557,8 +568,8 @@ section h2 {
   display: inline-block;
   width: 16px;
   height: 16px;
-  border: 2px solid #c6f6d5;
-  border-top-color: #38a169;
+  border: 2px solid #ddd6fe;
+  border-top-color: #7c3aed;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

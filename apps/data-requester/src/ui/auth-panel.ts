@@ -13,7 +13,7 @@ export function renderAuthPanel(container: HTMLElement): void {
     container.querySelector("#logout-btn")!.addEventListener("click", logout);
   } else {
     container.innerHTML = `
-      <button id="login-btn" class="btn btn-primary">Login with Inrupt</button>
+      <button id="login-btn" class="btn btn-primary">Log in with Solid</button>
     `;
     container.querySelector("#login-btn")!.addEventListener("click", login);
   }
