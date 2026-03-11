@@ -15,7 +15,7 @@ graph TB
         PM_desc["Browser-only SPA<br/>OIDC login · Spider pod contents<br/>Publish public index · Approve/deny grants"]
     end
 
-    subgraph DR["Data Requester · :5174 → :5175"]
+    subgraph DR["My AI Tutor · :5174 → :5175"]
         DR_desc["Server-side auth + frontend SPA<br/>Access grant queries · Fetch granted resources<br/>AI chatbot for data exploration"]
     end
 
@@ -37,18 +37,18 @@ graph TB
 |-----------|-------------|
 | `packages/shared` | Types, RDF vocabulary, Turtle index builder/parser, discovery API client, shared utilities. Imported as `@solid-ecosystem/shared`. Exports raw `.ts` (no build step). |
 | `apps/pod-manager` | Vite + vanilla TS browser SPA. Authenticates via `solid-client-authn-browser`, spiders the user's pod, builds/publishes a `public-index.ttl`, registers with discovery, manages access requests and grants. Supports file upload, move, and delete (including recursive container deletion). |
-| `apps/data-requester` | Express server + Vite frontend. Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching with grant VCs, and Claude AI chat. Frontend is a thin API client. |
+| `apps/data-requester` | **My AI Tutor.** Express server + Vite frontend. Server handles OIDC auth (`solid-client-authn-node`), access grant queries, resource fetching with grant VCs, and Claude AI chat. Frontend is a thin API client. |
 | `apps/discovery-server` | Express REST API for WebID registration and search. Fetches and caches public indices. |
 
 ## Prerequisites
 
 You need a Solid Pod on Inrupt Pod Spaces. Go to [start.inrupt.com](https://start.inrupt.com/), sign up, and create a pod. This gives you a WebID (e.g. `https://id.inrupt.com/yourname`) and a pod URL (e.g. `https://storage.inrupt.com/{uuid}/`).
 
-You'll log in with these credentials when using the Pod Manager and Data Requester apps.
+You'll log in with these credentials when using the Pod Manager and My AI Tutor apps.
 
 ### Client Credentials (for server-side auth)
 
-The Data Requester's Express server uses client credentials for server-side OIDC. To generate them:
+My AI Tutor's Express server uses client credentials for server-side OIDC. To generate them:
 
 1. Go to [login.inrupt.com](https://login.inrupt.com)
 2. Log in with your Pod Spaces account
@@ -83,7 +83,7 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 1. **User A** opens Pod Manager (:5173), logs in — pod is spidered automatically
 2. User A clicks **Publish Index** → writes `public-index.ttl` to pod root with public read access
 3. User A clicks **Register with Discovery** → appears in the directory
-4. **User B** opens Data Requester (:5174), logs in, searches the discovery server
+4. **User B** opens My AI Tutor (:5174), logs in, searches the discovery server
 5. User B finds User A, browses their public resource index
 6. User B selects resources and sends an access request (with modes and optional purpose)
 7. User A sees the request in Pod Manager → approves or denies
@@ -100,7 +100,7 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 | **Public index as Turtle** | `public-index.ttl` at pod root enables PATCH updates without full rewrites. |
 | **Access grants v4 API** | Uses `query()`/`paginatedQuery()` with getter helpers. |
 | **`inherit: true` for containers** | Automatically set when requesting access to containers so the grant cascades to contents. |
-| **Server-side auth for data-requester** | Keeps API keys and refresh tokens off the client. Express on :5174 proxies to Vite on :5175. |
+| **Server-side auth for My AI Tutor** | Keeps API keys and refresh tokens off the client. Express on :5174 proxies to Vite on :5175. |
 | **Shared `escapeHtml` utility** | Single consistent implementation in `packages/shared` used across all HTML rendering. |
 | **`VC_QUERY_ENDPOINT` in shared** | Inrupt VC query URL defined once in `packages/shared/src/vocab.ts`. |
 
@@ -152,14 +152,14 @@ Run with: `npx tsx --env-file=.env scripts/<script>.ts`
 
 | Package | Used By | Purpose |
 |---------|---------|---------|
-| `@inrupt/solid-client` | Pod Manager, Data Requester, Discovery Server | Pod data operations |
+| `@inrupt/solid-client` | Pod Manager, My AI Tutor, Discovery Server | Pod data operations |
 | `@inrupt/solid-client-authn-browser` | Pod Manager | Browser OIDC |
-| `@inrupt/solid-client-authn-node` | Data Requester (server) | Server-side OIDC with token refresh |
-| `@inrupt/solid-client-access-grants` v4 | Pod Manager, Data Requester (server) | Access request/grant lifecycle |
-| `@anthropic-ai/sdk` | Data Requester (server) | Claude AI chatbot |
-| `express`, `cors` | Discovery Server, Data Requester (server) | HTTP server |
-| `vite`, `typescript` | Pod Manager, Data Requester | Build tooling |
-| `tsx` | Discovery Server, Data Requester (server) | TypeScript execution (dev) |
+| `@inrupt/solid-client-authn-node` | My AI Tutor (server) | Server-side OIDC with token refresh |
+| `@inrupt/solid-client-access-grants` v4 | Pod Manager, My AI Tutor (server) | Access request/grant lifecycle |
+| `@anthropic-ai/sdk` | My AI Tutor (server) | Claude AI chatbot |
+| `express`, `cors` | Discovery Server, My AI Tutor (server) | HTTP server |
+| `vite`, `typescript` | Pod Manager, My AI Tutor | Build tooling |
+| `tsx` | Discovery Server, My AI Tutor (server) | TypeScript execution (dev) |
 
 ## Environment Variables
 

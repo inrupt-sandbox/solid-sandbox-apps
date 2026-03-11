@@ -47,7 +47,7 @@ authRouter.get("/login", async (req, res) => {
   if (clientId) {
     loginOpts.clientId = clientId;
   } else {
-    loginOpts.clientName = "Data Requester (Dev)";
+    loginOpts.clientName = "My AI Tutor (Dev)";
   }
 
   try {

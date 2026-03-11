@@ -51,5 +51,5 @@ if (isDev) {
 }
 
 app.listen(PORT, () => {
-  console.log(`Data Requester server running at http://localhost:${PORT}`);
+  console.log(`My AI Tutor server running at http://localhost:${PORT}`);
 });
