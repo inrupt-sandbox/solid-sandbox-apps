@@ -190,12 +190,15 @@ async function main(): Promise<void> {
     }
   }
 
-  // Poll access requests every 3 seconds to keep them fresh
+  // Poll access requests and grants every 3 seconds to keep them fresh
   let accessPollTimer: ReturnType<typeof setInterval> | null = null;
 
   function startAccessPolling() {
     stopAccessPolling();
-    accessPollTimer = setInterval(() => loadAccessRequests(), 3000);
+    accessPollTimer = setInterval(() => {
+      loadAccessRequests();
+      loadActiveGrants();
+    }, 3000);
   }
 
   function stopAccessPolling() {
@@ -210,6 +213,7 @@ async function main(): Promise<void> {
     tab.addEventListener("click", () => {
       if (tab.dataset.tab === "access") {
         loadAccessRequests();
+        loadActiveGrants();
         startAccessPolling();
       } else {
         stopAccessPolling();
