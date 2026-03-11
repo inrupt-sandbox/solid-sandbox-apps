@@ -11,7 +11,7 @@ graph TB
     ESS["<b>Inrupt Pod Spaces (ESS)</b><br/>login.inrupt.com · id.inrupt.com · storage.inrupt.com · vc.inrupt.com<br/><br/>WebID Profiles · Solid Pods · Access Grants &amp; Requests"]
     AI["<b>Claude API</b><br/>Chat completions via claude-haiku-4-5"]
 
-    subgraph PM["Pod Manager · :5173"]
+    subgraph PM["My Wallet · :5173"]
         PM_desc["Browser-only SPA<br/>OIDC login · Spider pod contents<br/>Publish public index · Approve/deny grants"]
     end
 
@@ -44,7 +44,7 @@ graph TB
 
 You need a Solid Pod on Inrupt Pod Spaces. Go to [start.inrupt.com](https://start.inrupt.com/), sign up, and create a pod. This gives you a WebID (e.g. `https://id.inrupt.com/yourname`) and a pod URL (e.g. `https://storage.inrupt.com/{uuid}/`).
 
-You'll log in with these credentials when using the Pod Manager and My AI Tutor apps.
+You'll log in with these credentials when using the My Wallet and My AI Tutor apps.
 
 ### Client Credentials (for server-side auth)
 
@@ -80,13 +80,13 @@ cd apps/data-requester && npm run dev     # http://localhost:5174
 
 ## Test Flow
 
-1. **User A** opens Pod Manager (:5173), logs in — pod is spidered automatically
+1. **User A** opens My Wallet (:5173), logs in — pod is spidered automatically
 2. User A clicks **Publish Index** → writes `public-index.ttl` to pod root with public read access
 3. User A clicks **Register with Discovery** → appears in the directory
 4. **User B** opens My AI Tutor (:5174), logs in, searches the discovery server
 5. User B finds User A, browses their public resource index
 6. User B selects resources and sends an access request (with modes and optional purpose)
-7. User A sees the request in Pod Manager → approves or denies
+7. User A sees the request in My Wallet → approves or denies
 8. User B's grants panel shows the approved grant → can browse granted resources
 9. User B loads granted resources into the AI chatbot for intelligent exploration
 
@@ -152,13 +152,13 @@ Run with: `npx tsx --env-file=.env scripts/<script>.ts`
 
 | Package | Used By | Purpose |
 |---------|---------|---------|
-| `@inrupt/solid-client` | Pod Manager, My AI Tutor, Discovery Server | Pod data operations |
-| `@inrupt/solid-client-authn-browser` | Pod Manager | Browser OIDC |
+| `@inrupt/solid-client` | My Wallet, My AI Tutor, Discovery Server | Pod data operations |
+| `@inrupt/solid-client-authn-browser` | My Wallet | Browser OIDC |
 | `@inrupt/solid-client-authn-node` | My AI Tutor (server) | Server-side OIDC with token refresh |
-| `@inrupt/solid-client-access-grants` v4 | Pod Manager, My AI Tutor (server) | Access request/grant lifecycle |
+| `@inrupt/solid-client-access-grants` v4 | My Wallet, My AI Tutor (server) | Access request/grant lifecycle |
 | `@anthropic-ai/sdk` | My AI Tutor (server) | Claude AI chatbot |
 | `express`, `cors` | Discovery Server, My AI Tutor (server) | HTTP server |
-| `vite`, `typescript` | Pod Manager, My AI Tutor | Build tooling |
+| `vite`, `typescript` | My Wallet, My AI Tutor | Build tooling |
 | `tsx` | Discovery Server, My AI Tutor (server) | TypeScript execution (dev) |
 
 ## Environment Variables
