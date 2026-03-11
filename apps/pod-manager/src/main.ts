@@ -108,6 +108,16 @@ async function main(): Promise<void> {
   // Init upload panel (starts empty until a container is selected)
   initUploadPanel(uploadArea, authFetch, () => refreshPod());
 
+  // Wire up refresh button
+  const refreshBtn = document.getElementById("refresh-pod-btn") as HTMLButtonElement;
+  refreshBtn.addEventListener("click", async () => {
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = "Refreshing...";
+    await refreshPod();
+    refreshBtn.textContent = "Refresh";
+    refreshBtn.disabled = false;
+  });
+
   async function refreshPod(): Promise<void> {
     try {
       const resources = await spiderPod(

@@ -9,18 +9,39 @@ interface ResourceContext {
   text: string;
 }
 
+export interface GrantContext {
+  grantId: string;
+  resourceUrls: string[];
+  modes: string[];
+}
+
+export interface ToolUse {
+  tool: string;
+  title: string;
+}
+
+export interface ChatResponse {
+  content: string;
+  toolUses?: ToolUse[];
+}
+
 let messages: ChatMessage[] = [];
 let resourceContext: ResourceContext[] = [];
+let grantContext: GrantContext[] = [];
 
 export function setResourceContext(resources: ResourceContext[]): void {
   resourceContext = resources;
+}
+
+export function setGrantContext(grants: GrantContext[]): void {
+  grantContext = grants;
 }
 
 export function clearConversation(): void {
   messages = [];
 }
 
-export async function sendMessage(userText: string): Promise<string> {
+export async function sendMessage(userText: string): Promise<ChatResponse> {
   messages.push({ role: "user", content: userText });
 
   const res = await fetch("/api/chat", {
@@ -29,6 +50,7 @@ export async function sendMessage(userText: string): Promise<string> {
     body: JSON.stringify({
       messages,
       resourceContext,
+      grantContext,
     }),
   });
 
@@ -46,5 +68,8 @@ export async function sendMessage(userText: string): Promise<string> {
   };
   messages.push(assistantMessage);
 
-  return data.content;
+  return {
+    content: data.content,
+    toolUses: data.toolUses,
+  };
 }

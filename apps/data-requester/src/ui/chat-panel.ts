@@ -13,9 +13,11 @@ export function renderChatPanel(
   container: HTMLElement,
   availableResources: AvailableResource[],
   onSend: (text: string) => Promise<void>,
-  onResourcesChanged: (selected: AvailableResource[]) => void
+  onResourcesChanged: (selected: AvailableResource[]) => void,
+  hasWriteGrant?: boolean
 ): void {
   const selectedUrls = new Set<string>();
+  const hasWrite = hasWriteGrant ?? false;
 
   // Build resource picker
   const resourceItems = availableResources
@@ -29,7 +31,12 @@ export function renderChatPanel(
     })
     .join("");
 
+  const memoryBanner = hasWrite
+    ? `<div class="chat-memory-status chat-memory-active">Memory enabled — the tutor can save notes to <code>memory.ttl</code></div>`
+    : `<div class="chat-memory-status chat-memory-inactive">Memory disabled — request write access in the Request Access tab to enable</div>`;
+
   container.innerHTML = `
+    ${memoryBanner}
     <div class="chat-resource-picker">
       <p class="chat-picker-label">Select resources to include in chat:</p>
       <div class="chat-resource-list">${resourceItems}</div>
@@ -114,6 +121,20 @@ export function appendMessage(
     msg.textContent = content;
   }
   messagesEl.appendChild(msg);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+export function appendToolUse(
+  container: HTMLElement,
+  toolUse: { tool: string; title: string }
+): void {
+  const messagesEl = container.querySelector("#chat-messages");
+  if (!messagesEl) return;
+
+  const el = document.createElement("div");
+  el.className = "chat-tool-use";
+  el.textContent = `Saved to memory.ttl: ${toolUse.title}`;
+  messagesEl.appendChild(el);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
