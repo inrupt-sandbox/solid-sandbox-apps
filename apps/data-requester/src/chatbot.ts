@@ -18,6 +18,7 @@ export interface GrantContext {
 export interface ToolUse {
   tool: string;
   title: string;
+  content: string;
 }
 
 export interface ChatResponse {

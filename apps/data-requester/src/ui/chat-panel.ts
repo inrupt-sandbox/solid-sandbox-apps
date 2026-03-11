@@ -126,14 +126,24 @@ export function appendMessage(
 
 export function appendToolUse(
   container: HTMLElement,
-  toolUse: { tool: string; title: string }
+  toolUse: { tool: string; title: string; content: string }
 ): void {
   const messagesEl = container.querySelector("#chat-messages");
   if (!messagesEl) return;
 
   const el = document.createElement("div");
   el.className = "chat-tool-use";
-  el.textContent = `Saved to memory.ttl: ${toolUse.title}`;
+
+  const header = document.createElement("div");
+  header.className = "chat-tool-use-header";
+  header.innerHTML = `<span class="chat-tool-use-icon">&#128190;</span> Saved to memory.ttl: <strong>${escapeHtml(toolUse.title)}</strong>`;
+  el.appendChild(header);
+
+  const contentEl = document.createElement("div");
+  contentEl.className = "chat-tool-use-content";
+  contentEl.innerHTML = marked.parse(toolUse.content) as string;
+  el.appendChild(contentEl);
+
   messagesEl.appendChild(el);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }

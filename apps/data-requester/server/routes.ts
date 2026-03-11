@@ -280,7 +280,7 @@ apiRouter.post("/chat", async (req, res) => {
     }
 
     const tools: Anthropic.Tool[] = hasWriteAccess ? [saveMemoryTool] : [];
-    const toolUses: Array<{ tool: string; title: string }> = [];
+    const toolUses: Array<{ tool: string; title: string; content: string }> = [];
     // Collect memory saves to execute AFTER returning the response
     const pendingMemorySaves: Array<{ title: string; content: string }> = [];
 
@@ -313,7 +313,7 @@ apiRouter.post("/chat", async (req, res) => {
 
           // Queue the save for after the response — tell Claude it succeeded so it produces text
           pendingMemorySaves.push(input);
-          toolUses.push({ tool: "save_memory", title: input.title });
+          toolUses.push({ tool: "save_memory", title: input.title, content: input.content });
 
           apiMessages = [
             ...apiMessages,

@@ -551,10 +551,48 @@ section h2 {
   color: #5b21b6;
   background: #ede9fe;
   border: 1px solid #ddd6fe;
-  border-radius: 6px;
-  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
   align-self: flex-start;
+  max-width: 85%;
+}
+
+.chat-tool-use-header {
   font-style: italic;
+  margin-bottom: 0.25rem;
+}
+
+.chat-tool-use-icon {
+  margin-right: 0.25rem;
+}
+
+.chat-tool-use-content {
+  font-style: normal;
+  color: #1e1b4b;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  border-top: 1px solid #ddd6fe;
+  padding-top: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.chat-tool-use-content p { margin: 0.2rem 0; }
+.chat-tool-use-content p:first-child { margin-top: 0; }
+.chat-tool-use-content p:last-child { margin-bottom: 0; }
+.chat-tool-use-content ul, .chat-tool-use-content ol {
+  margin: 0.2rem 0;
+  padding-left: 1.25rem;
+}
+.chat-tool-use-content h1, .chat-tool-use-content h2,
+.chat-tool-use-content h3, .chat-tool-use-content h4 {
+  margin: 0.3rem 0 0.15rem;
+  font-size: 0.85em;
+}
+.chat-tool-use-content code {
+  background: #ddd6fe;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.85em;
 }
 
 .chat-loading {
