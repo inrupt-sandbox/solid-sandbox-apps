@@ -3,8 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import {
   query,
   getFile,
+  overwriteFile,
   getSolidDataset as getSolidDatasetWithGrant,
-  saveSolidDatasetAt as saveSolidDatasetWithGrant,
   getId,
   getResourceOwner,
   getResources,
@@ -21,7 +21,7 @@ import {
   createSolidDataset,
   buildThing,
   setThing,
-  getThingAll,
+  solidDatasetAsTurtle,
   type SolidDataset,
 } from "@inrupt/solid-client";
 import { parsePodIndexFromDataset, DiscoveryClient, VC_QUERY_ENDPOINT, formatModes } from "@solid-ecosystem/shared";
@@ -232,8 +232,12 @@ async function executeSaveMemory(
 
   dataset = setThing(dataset, entry);
 
-  await saveSolidDatasetWithGrant(memoryUrl, dataset, writeGrantVc, {
+  // Serialize to Turtle and write via overwriteFile to avoid ETag/412 issues
+  const turtle = await solidDatasetAsTurtle(dataset);
+  const blob = new Blob([turtle], { type: "text/turtle" });
+  await overwriteFile(memoryUrl, blob, writeGrantVc, {
     fetch: session.fetch,
+    contentType: "text/turtle",
   });
 }
 
@@ -277,6 +281,8 @@ apiRouter.post("/chat", async (req, res) => {
 
     const tools: Anthropic.Tool[] = hasWriteAccess ? [saveMemoryTool] : [];
     const toolUses: Array<{ tool: string; title: string }> = [];
+    // Collect memory saves to execute AFTER returning the response
+    const pendingMemorySaves: Array<{ title: string; content: string }> = [];
 
     let apiMessages: Anthropic.MessageParam[] = messages.map((m: any) => ({
       role: m.role,
@@ -304,32 +310,11 @@ apiRouter.post("/chat", async (req, res) => {
 
         if (toolUseBlock && toolUseBlock.name === "save_memory" && writeGrant) {
           const input = toolUseBlock.input as { title: string; content: string };
-          let resultText: string;
 
-          try {
-            const writeGrantVc = grantVcCache.get(writeGrant.grantId);
-            if (!writeGrantVc) throw new Error("Write grant VC not found in cache");
-            const readGrantVc = readGrant ? grantVcCache.get(readGrant.grantId) ?? null : null;
+          // Queue the save for after the response — tell Claude it succeeded so it produces text
+          pendingMemorySaves.push(input);
+          toolUses.push({ tool: "save_memory", title: input.title });
 
-            // Resolve the pod root from the resource owner's WebID
-            const ownerWebId = getResourceOwner(writeGrantVc);
-            let podRoot: string;
-            if (ownerWebId) {
-              const podUrls = await getPodUrlAll(ownerWebId, { fetch: session.fetch });
-              podRoot = podUrls[0] ?? derivePodRoot(writeGrant.resourceUrls);
-            } else {
-              podRoot = derivePodRoot(writeGrant.resourceUrls);
-            }
-
-            await executeSaveMemory(session, writeGrantVc, readGrantVc, podRoot, input.title, input.content);
-            toolUses.push({ tool: "save_memory", title: input.title });
-            resultText = `Successfully saved "${input.title}" to memory.ttl`;
-          } catch (err: any) {
-            console.error("save_memory failed:", err);
-            resultText = `Failed to save memory: ${err.message}`;
-          }
-
-          // Append assistant response + tool result, then loop
           apiMessages = [
             ...apiMessages,
             { role: "assistant", content: response.content },
@@ -339,7 +324,7 @@ apiRouter.post("/chat", async (req, res) => {
                 {
                   type: "tool_result",
                   tool_use_id: toolUseBlock.id,
-                  content: resultText,
+                  content: `Successfully saved "${input.title}" to memory.ttl`,
                 },
               ],
             },
@@ -350,11 +335,34 @@ apiRouter.post("/chat", async (req, res) => {
 
       // stop_reason is "end_turn" or no tool_use we handle — extract text and return
       const textContent = response.content.find((c) => c.type === "text");
-      return res.json({
+      res.json({
         role: "assistant",
         content: textContent?.text ?? "",
         toolUses: toolUses.length > 0 ? toolUses : undefined,
       });
+
+      // Execute memory saves in the background AFTER sending the response
+      if (pendingMemorySaves.length > 0 && writeGrant) {
+        const writeGrantVc = grantVcCache.get(writeGrant.grantId);
+        const readGrantVc = readGrant ? grantVcCache.get(readGrant.grantId) ?? null : null;
+        if (writeGrantVc) {
+          const ownerWebId = getResourceOwner(writeGrantVc);
+          getPodUrlAll(ownerWebId ?? "", { fetch: session.fetch })
+            .then((podUrls) => podUrls[0] ?? derivePodRoot(writeGrant.resourceUrls))
+            .catch(() => derivePodRoot(writeGrant.resourceUrls))
+            .then(async (podRoot) => {
+              for (const save of pendingMemorySaves) {
+                try {
+                  await executeSaveMemory(session, writeGrantVc, readGrantVc, podRoot, save.title, save.content);
+                  console.log(`Memory saved: "${save.title}"`);
+                } catch (err) {
+                  console.error(`Background memory save failed for "${save.title}":`, err);
+                }
+              }
+            });
+        }
+      }
+      return;
     }
 
     // Max iterations reached — return whatever we have
