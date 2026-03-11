@@ -86,29 +86,32 @@ async function main(): Promise<void> {
       }))
     );
 
-    // Build list of all resources across all grants, expanding containers
-    // Only list containers from grants that include Read access
+    // Build list of all resources across all grants, expanding containers in parallel
     const availableResources: Array<{ url: string; grant: GrantInfo }> = [];
+    const containerFetches: Promise<void>[] = [];
+
     for (const grant of grants) {
       const hasRead = grant.modes.some((m) => m.toLowerCase().includes("read"));
       for (const url of grant.resourceUrls) {
         if (url.endsWith("/")) {
           if (!hasRead) continue; // Write-only grant — can't list contents
-          try {
-            const contents = await listContainerContents(url, grant.id);
-            for (const childUrl of contents) {
-              if (!childUrl.endsWith("/")) {
-                availableResources.push({ url: childUrl, grant });
-              }
-            }
-          } catch (err) {
-            console.error(`Failed to list container ${url}:`, err);
-          }
+          containerFetches.push(
+            listContainerContents(url, grant.id)
+              .then((contents) => {
+                for (const childUrl of contents) {
+                  if (!childUrl.endsWith("/")) {
+                    availableResources.push({ url: childUrl, grant });
+                  }
+                }
+              })
+              .catch((err) => console.error(`Failed to list container ${url}:`, err))
+          );
         } else {
           availableResources.push({ url, grant });
         }
       }
     }
+    await Promise.all(containerFetches);
 
     // Check if any grant has Write mode
     const hasWriteGrant = grants.some((g) =>
