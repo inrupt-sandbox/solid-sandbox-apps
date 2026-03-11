@@ -318,6 +318,7 @@ import {
   paginatedQuery,
   revokeAccessGrant,
   getFile,              // fetch a resource using a grant VC
+  overwriteFile,        // write a resource using a grant VC
   getId,
   getRequestor,
   getResourceOwner,     // who owns the resource (use on grants you've received)
@@ -454,6 +455,68 @@ const blobUrl = URL.createObjectURL(blob);  // for browser display/download
 ```
 
 **IMPORTANT:** `getFile` from `@inrupt/solid-client-access-grants` is different from `getFile` in `@inrupt/solid-client`. The access-grants version takes a grant VC as the second parameter to authorize the request. Do not confuse the two.
+
+### Writing resources using a grant
+
+**Use `overwriteFile()` from `@inrupt/solid-client-access-grants`** (NOT from `@inrupt/solid-client`) to write resources authorized by a grant VC:
+
+```typescript
+import { overwriteFile, getFile } from '@inrupt/solid-client-access-grants';
+
+// Write a file to a granted location
+const content = 'Hello from a granted write!';
+const blob = new Blob([content], { type: 'text/plain' });
+await overwriteFile(resourceUrl, blob, grantVc, {
+  contentType: 'text/plain',
+  fetch: session.fetch,
+});
+
+// Read-then-append pattern (e.g., appending to a log file)
+let existing = '';
+try {
+  const file = await getFile(resourceUrl, readGrantVc, { fetch: session.fetch });
+  existing = await file.text();
+} catch {
+  // File doesn't exist yet — start fresh
+}
+const updated = existing + '\nNew entry';
+const updatedBlob = new Blob([updated], { type: 'text/plain' });
+await overwriteFile(resourceUrl, updatedBlob, writeGrantVc, {
+  contentType: 'text/plain',
+  fetch: session.fetch,
+});
+```
+
+**IMPORTANT:** The read and write grants may be separate VCs. If you only have a write grant, you cannot read the file first — handle this gracefully by catching the read error and starting fresh.
+
+**Writing Turtle (RDF) with grants:** When the pod server receives a `.ttl` file, it validates the Turtle syntax. Ensure all string literals escape newlines (`\n`), tabs (`\t`), and backslashes (`\\`). Raw newlines inside quoted strings cause a 400 "RDF source is malformed" error.
+
+```typescript
+// Escape for Turtle string literals
+function escapeTurtleLiteral(s: string): string {
+  return s
+    .replace(/\\/g, '\\\\')
+    .replace(/"""/g, '\\"\\"\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
+}
+
+const turtle = `@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<#entry-1> a schema:LearningResource ;
+  schema:name "${escapeTurtleLiteral(title)}" ;
+  schema:text "${escapeTurtleLiteral(content)}" ;
+  schema:dateCreated "${new Date().toISOString()}"^^xsd:dateTime .
+`;
+
+const blob = new Blob([turtle], { type: 'text/turtle' });
+await overwriteFile(memoryUrl, blob, writeGrantVc, {
+  contentType: 'text/turtle',
+  fetch: session.fetch,
+});
+```
 
 ### Revoke a grant
 
@@ -801,6 +864,34 @@ await setPublicAccess(resourceUrl, { read: true }, { fetch: session.fetch });
 
 ---
 
+### Gotcha #15: Separate read and write grants — UMA exchange errors
+
+**Problem:** You have a write grant on a container and try to `getFile()` using that grant VC. The UMA token exchange fails because the grant only covers write access, not read. Error: `UmaError: No access token was returned during the UMA exchange flow.`
+
+**Solution:** Read and write grants are separate VCs with different access modes. Use the correct grant for each operation:
+
+```typescript
+// Find the right grant for each operation
+const writeGrant = grants.find(g => getAccessModes(g).write);
+const readGrant = grants.find(g => getAccessModes(g).read);
+
+// Read with the read grant
+if (readGrant) {
+  const file = await getFile(url, readGrant, { fetch });
+}
+
+// Write with the write grant
+await overwriteFile(url, blob, writeGrant, { fetch, contentType: 'text/turtle' });
+```
+
+**Also:** Write-only grants on containers cannot list the container contents (`getSolidDataset` will fail with 403). Skip container listing for grants that only have write mode.
+
+### Gotcha #16: Turtle string literals must not contain raw newlines
+
+**Problem:** Writing a `.ttl` file to a pod with content that has newlines in string literals (e.g., `"line1\nline2"` with actual newline characters) causes: `400 Bad Request: RDF source is malformed. Details: Broken token (newline in string)`.
+
+**Solution:** Escape all special characters in Turtle string literals before writing. Use `\n` for newlines, `\r` for carriage returns, `\t` for tabs. See the `escapeTurtleLiteral()` function in the "Writing Turtle with grants" section above.
+
 ## Debugging tips
 
 1. **401 on pod access?** Check `tokenType: 'Bearer'` in login. Check that you're passing `{ fetch: session.fetch }` (not bare `fetch`).
@@ -809,3 +900,5 @@ await setPublicAccess(resourceUrl, { read: true }, { fetch: session.fetch });
 4. **409 Conflict?** Concurrent writes to the same resource. Add retry logic or use ETags.
 5. **CORS errors in browser?** Pod Spaces supports CORS, but your OIDC issuer URL must match. Check `oidcIssuer` value.
 6. **Refresh token fails?** Token rotation may have already occurred. Clear session and re-authenticate.
+7. **UMA exchange error?** You're using a grant VC that doesn't cover the operation (e.g., reading with a write-only grant). Use the correct grant VC for each operation.
+8. **400 "RDF source is malformed" on `.ttl` write?** Raw newlines in Turtle string literals. Escape with `\n` before writing.
