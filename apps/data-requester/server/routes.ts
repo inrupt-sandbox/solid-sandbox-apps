@@ -3,8 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import {
   query,
   getFile,
-  overwriteFile,
   getSolidDataset as getSolidDatasetWithGrant,
+  saveSolidDatasetAt as saveSolidDatasetWithGrant,
   getId,
   getResourceOwner,
   getResources,
@@ -14,7 +14,16 @@ import {
   issueAccessRequest,
   type CredentialResult,
 } from "@inrupt/solid-client-access-grants";
-import { getPodUrlAll, getSolidDataset, getContainedResourceUrlAll } from "@inrupt/solid-client";
+import {
+  getPodUrlAll,
+  getSolidDataset,
+  getContainedResourceUrlAll,
+  createSolidDataset,
+  buildThing,
+  setThing,
+  getThingAll,
+  type SolidDataset,
+} from "@inrupt/solid-client";
 import { parsePodIndexFromDataset, DiscoveryClient, VC_QUERY_ENDPOINT, formatModes } from "@solid-ecosystem/shared";
 import type { DatasetWithId } from "@inrupt/solid-client-vc";
 import { getSessionForRequest } from "./auth.js";
@@ -165,17 +174,16 @@ const saveMemoryTool: Anthropic.Tool = {
   },
 };
 
-function escapeTurtleLiteral(s: string): string {
-  return s
-    .replace(/\\/g, "\\\\")
-    .replace(/"""/g, '\\"\\"\\"')
-    .replace(/\n/g, "\\n")
-    .replace(/\r/g, "\\r")
-    .replace(/\t/g, "\\t");
-}
+const SCHEMA = {
+  LearningResource: "http://schema.org/LearningResource",
+  name: "http://schema.org/name",
+  text: "http://schema.org/text",
+  dateCreated: "http://schema.org/dateCreated",
+} as const;
+
+const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
 function derivePodRoot(resourceUrls: string[]): string {
-  // Pod root is the scheme + host + first path segment (e.g. https://storage.inrupt.com/uuid/)
   for (const url of resourceUrls) {
     try {
       const u = new URL(url);
@@ -201,37 +209,30 @@ async function executeSaveMemory(
 ): Promise<void> {
   const memoryUrl = `${podRoot}memory.ttl`;
 
-  let existing = "";
-  // Try to read existing memory.ttl using a read grant if available
+  // Try to read existing dataset, or start fresh
+  let dataset: SolidDataset = createSolidDataset();
   if (readGrantVc) {
     try {
-      const blob = await getFile(memoryUrl, readGrantVc, { fetch: session.fetch });
-      existing = await blob.text();
+      dataset = await getSolidDatasetWithGrant(memoryUrl, readGrantVc, {
+        fetch: session.fetch,
+      });
     } catch {
       // File doesn't exist yet or read grant doesn't cover it
     }
   }
 
-  if (!existing) {
-    existing = `@prefix schema: <http://schema.org/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix mem: <#> .
-`;
-  }
+  // Build a new Thing for this memory entry
+  const entryUrl = `${memoryUrl}#entry-${Date.now()}`;
+  const entry = buildThing({ url: entryUrl })
+    .addUrl(RDF_TYPE, SCHEMA.LearningResource)
+    .addStringNoLocale(SCHEMA.name, title)
+    .addStringNoLocale(SCHEMA.text, content)
+    .addDatetime(SCHEMA.dateCreated, new Date())
+    .build();
 
-  const id = `entry-${Date.now()}`;
-  const timestamp = new Date().toISOString();
-  const triple = `
-mem:${id} a schema:LearningResource ;
-  schema:name "${escapeTurtleLiteral(title)}" ;
-  schema:text "${escapeTurtleLiteral(content)}" ;
-  schema:dateCreated "${timestamp}"^^xsd:dateTime .
-`;
-  const updated = existing + triple;
+  dataset = setThing(dataset, entry);
 
-  const blob = new Blob([updated], { type: "text/turtle" });
-  await overwriteFile(memoryUrl, blob, writeGrantVc, {
-    contentType: "text/turtle",
+  await saveSolidDatasetWithGrant(memoryUrl, dataset, writeGrantVc, {
     fetch: session.fetch,
   });
 }
